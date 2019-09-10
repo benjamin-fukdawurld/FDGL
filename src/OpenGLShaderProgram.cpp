@@ -1,5 +1,7 @@
 #include <FDGL/OpenGLShaderProgram.h>
 
+#include <iostream>
+
 FDGL::OpenGLShaderProgramWrapper::OpenGLShaderProgramWrapper(FDGL::OpenGLShaderProgramWrapper &&other) : OpenGLShaderProgramWrapper()
 {
     *this = std::move(other);
@@ -60,7 +62,7 @@ bool FDGL::OpenGLShaderProgramWrapper::link()
     int success = 0;
     glLinkProgram(m_id);
     glGetProgramiv(m_id, GL_LINK_STATUS, &success);
-    return success != 0;
+    return success == GL_TRUE;
 }
 
 std::string FDGL::OpenGLShaderProgramWrapper::getLinkErrors() const
@@ -71,7 +73,7 @@ std::string FDGL::OpenGLShaderProgramWrapper::getLinkErrors() const
     do
     {
         glGetProgramInfoLog(m_id, 1024, &size, buffer);
-        result.append(buffer, static_cast<size_t>(size));
+        result.append(buffer);
     } while(size > 0);
 
     return result;

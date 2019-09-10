@@ -65,7 +65,7 @@ bool FDGL::OpenGLShaderWrapper::compile()
     glCompileShader(m_id);
     int  success;
     glGetShaderiv(m_id, GL_COMPILE_STATUS, &success);
-    return success != 0;
+    return success == GL_TRUE;
 }
 
 std::string FDGL::OpenGLShaderWrapper::getCompileErrors() const
