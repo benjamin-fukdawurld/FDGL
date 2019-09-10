@@ -1,38 +1,37 @@
 #include <FDGL/OpenGLVertexArray.h>
 
-template<>
-bool FDGL::is<FDGL::OpenGLVertexArrayWrapper>(const OpenGLResourceWrapper &res)
-{
-    return glIsBuffer(res.getId());
-}
+#include <glad/glad.h>
 
-template<>
-const FDGL::OpenGLVertexArrayWrapper FDGL::as<FDGL::OpenGLVertexArrayWrapper>(const FDGL::OpenGLResourceWrapper &res)
-{
-    if(!is<OpenGLVertexArrayWrapper>(res))
-    return OpenGLVertexArrayWrapper();
 
-    return OpenGLVertexArrayWrapper(res.getId());
-}
-
-template<>
-FDGL::OpenGLVertexArrayWrapper FDGL::as<FDGL::OpenGLVertexArrayWrapper>(FDGL::OpenGLResourceWrapper &res)
-{
-    if(!is<OpenGLVertexArrayWrapper>(res))
-    return OpenGLVertexArrayWrapper();
-
-    return OpenGLVertexArrayWrapper(res.getId());
-}
-
-FDGL::OpenGLVertexArrayWrapper::OpenGLVertexArrayWrapper(FDGL::OpenGLVertexArrayWrapper &&other) : OpenGLVertexArrayWrapper()
+FDGL::OpenGLVertexArrayWrapper::OpenGLVertexArrayWrapper(FDGL::OpenGLVertexArrayWrapper &&other)
 {
     *this = std::move(other);
 }
 
-FDGL::OpenGLVertexArrayWrapper::OpenGLVertexArrayWrapper(FDGL::OpenGLResourceWrapper &&other) : OpenGLVertexArrayWrapper()
+FDGL::OpenGLVertexArrayWrapper::OpenGLVertexArrayWrapper(FDGL::OpenGLResourceWrapper &&other)
+{
+    if(FDGL::is<FDGL::OpenGLVertexArrayWrapper>(other))
+    *this = std::move(other);
+}
+
+FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(const FDGL::OpenGLResourceWrapper &other)
 {
     if(FDGL::is<OpenGLVertexArrayWrapper>(other))
-        *this = std::move(other);
+        OpenGLResourceWrapper::operator=(other);
+    return *this;
+}
+
+FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(FDGL::OpenGLResourceWrapper &&other)
+{
+    if(FDGL::is<OpenGLVertexArrayWrapper>(other))
+        OpenGLResourceWrapper::operator=(std::move(other));
+    return *this;
+}
+
+FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(const FDGL::OpenGLVertexArrayWrapper &other)
+{
+    OpenGLResourceWrapper::operator=(std::move(other));
+    return *this;
 }
 
 FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(FDGL::OpenGLVertexArrayWrapper &&other)
@@ -43,9 +42,7 @@ FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(FDGL::
 
 bool FDGL::OpenGLVertexArrayWrapper::create()
 {
-    release();
-    glGenBuffers(1, &m_id);
-
+    glGenVertexArrays(1, &m_id);
     return m_id != 0;
 }
 
@@ -54,37 +51,40 @@ void FDGL::OpenGLVertexArrayWrapper::destroy()
     if(m_id == 0)
         return;
 
-    glDeleteBuffers(1, &m_id);
+    glDeleteVertexArrays(1, &m_id);
     m_id = 0;
 }
 
-void FDGL::OpenGLVertexArrayWrapper::bind(FDGL::BufferTarget target)
+void FDGL::OpenGLVertexArrayWrapper::bind()
 {
-    glBindBuffer(static_cast<GLenum>(target), m_id);
+    glBindVertexArray(m_id);
 }
 
-void FDGL::OpenGLVertexArrayWrapper::unbind(FDGL::BufferTarget target)
+void FDGL::OpenGLVertexArrayWrapper::unbind()
 {
-    glBindBuffer(static_cast<GLenum>(target), 0);
+    glBindVertexArray(0);
 }
 
-FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(const FDGL::OpenGLVertexArrayWrapper &other)
+template<>
+bool FDGL::is<FDGL::OpenGLVertexArrayWrapper>(const FDGL::OpenGLResourceWrapper &res)
 {
-    OpenGLResourceWrapper::operator=(other);
-    return *this;
+    return glIsVertexArray(res.getId());
 }
 
-FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(FDGL::OpenGLResourceWrapper &&other)
+template<>
+const FDGL::OpenGLVertexArrayWrapper FDGL::as<FDGL::OpenGLVertexArrayWrapper>(const FDGL::OpenGLResourceWrapper &res)
 {
-    if(FDGL::is<OpenGLVertexArrayWrapper>(other))
-        OpenGLResourceWrapper::operator=(std::move(other));
+    if(FDGL::is<FDGL::OpenGLVertexArrayWrapper>(res))
+        return FDGL::OpenGLVertexArrayWrapper(res);
 
-    return *this;
+    return FDGL::OpenGLVertexArrayWrapper();
 }
 
-FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(const FDGL::OpenGLResourceWrapper &other)
+template<>
+FDGL::OpenGLVertexArrayWrapper FDGL::as<FDGL::OpenGLVertexArrayWrapper>(FDGL::OpenGLResourceWrapper &res)
 {
-    if(FDGL::is<OpenGLVertexArrayWrapper>(other))
-        OpenGLResourceWrapper::operator=(other);
-    return *this;
+    if(FDGL::is<FDGL::OpenGLVertexArrayWrapper>(res))
+        return FDGL::OpenGLVertexArrayWrapper(res);
+
+    return FDGL::OpenGLVertexArrayWrapper();
 }

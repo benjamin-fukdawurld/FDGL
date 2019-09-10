@@ -1,16 +1,15 @@
 #ifndef OPENGLVERTEXARRAY_H
 #define OPENGLVERTEXARRAY_H
 
-#include <FDGL/OpenGLResource.h>
-
-#include <FDGL/OpenGLUtils.h>
+#include "OpenGLResource.h"
 
 namespace FDGL
 {
     class OpenGLVertexArrayWrapper : public FDGL::OpenGLResourceWrapper
     {
         public:
-            explicit OpenGLVertexArrayWrapper(uint32_t id = 0) : OpenGLResourceWrapper(id) {}
+        public:
+            OpenGLVertexArrayWrapper(uint32_t id = 0) : OpenGLResourceWrapper(id) {}
             OpenGLVertexArrayWrapper(const OpenGLVertexArrayWrapper &other) : OpenGLResourceWrapper(other) {}
             OpenGLVertexArrayWrapper(const OpenGLResourceWrapper &other) : OpenGLResourceWrapper(other) {}
 
@@ -30,8 +29,16 @@ namespace FDGL
 
             void destroy() override;
 
-            void bind(FDGL::BufferTarget target);
-            void unbind(FDGL::BufferTarget target);
+            void bind();
+            void unbind();
+
+            template<typename VAOFunction, typename ...Args>
+            void setFunction(VAOFunction f, Args ...args)
+            {
+                bind();
+                f(args...);
+                unbind();
+            }
     };
 
     template<>
