@@ -50,6 +50,49 @@ namespace FDGL
         Fragment = GL_FRAGMENT_SHADER
     };
 
+    enum class TextureTarget : uint32_t
+    {
+        Invalid = GL_INVALID_ENUM,
+        Texture1D = GL_TEXTURE_1D,
+        Texture2D = GL_TEXTURE_2D,
+        Texture3D = GL_TEXTURE_3D,
+        Texture1DArray = GL_TEXTURE_1D_ARRAY,
+        Texture2DArray = GL_TEXTURE_2D_ARRAY,
+        TextureRectangle = GL_TEXTURE_RECTANGLE,
+        TextureCubeMap = GL_TEXTURE_CUBE_MAP,
+        TextureCubeMapArray = GL_TEXTURE_CUBE_MAP_ARRAY,
+        TextureCubeMapPosX = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+        TextureCubeMapNegX = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+        TextureCubeMapPosY = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+        TextureCubeMapNegY = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+        TextureCubeMapPosZ = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+        TextureCubeMapNegZ = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
+        TextureBuffer = GL_TEXTURE_BUFFER,
+        TextureMultisample2D = GL_TEXTURE_2D_MULTISAMPLE,
+        TextureMultisample2DArray = GL_TEXTURE_2D_MULTISAMPLE_ARRAY
+    };
+
+    enum class TextureWrapMode : int32_t
+    {
+        Invalid = GL_INVALID_ENUM,
+        ClampToEdge = GL_CLAMP_TO_EDGE,
+        ClampToBorder = GL_CLAMP_TO_BORDER,
+        MirroredRepeat = GL_MIRRORED_REPEAT,
+        Repeat = GL_REPEAT,
+        MirrorClampToEdge = GL_MIRROR_CLAMP_TO_EDGE
+    };
+
+    enum class TextureFilter : int32_t
+    {
+        Invalid = GL_INVALID_ENUM,
+        Nearest = GL_NEAREST,
+        Linear = GL_LINEAR,
+        NearestMipmapNearest = GL_NEAREST_MIPMAP_NEAREST,
+        LinearMipmapNearest = GL_LINEAR_MIPMAP_NEAREST,
+        NearestMipmapLinear = GL_NEAREST_MIPMAP_LINEAR,
+        LinearMipmapLinear = GL_LINEAR_MIPMAP_LINEAR
+    };
+
     std::vector<GLenum> getLastOpenGLErrors();
 }
 
