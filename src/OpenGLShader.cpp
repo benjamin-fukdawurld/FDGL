@@ -1,5 +1,7 @@
 #include <FDGL/OpenGLShader.h>
 
+#include <memory>
+
 FDGL::OpenGLShaderWrapper::OpenGLShaderWrapper(FDGL::OpenGLShaderWrapper &&other) : OpenGLShaderWrapper()
 {
     *this = std::move(other);
@@ -71,13 +73,13 @@ bool FDGL::OpenGLShaderWrapper::compile()
 std::string FDGL::OpenGLShaderWrapper::getCompileErrors() const
 {
     std::string result;
-    char buffer[1024];
+    std::unique_ptr<char[]> buffer;
     int size;
-    do
-    {
-        glGetShaderInfoLog(m_id, 1024, &size, buffer);
-        result.append(buffer, static_cast<size_t>(size));
-    } while(size > 0);
+    glGetShaderiv(m_id, GL_INFO_LOG_LENGTH, &size);
+    buffer.reset(new char[static_cast<size_t>(size)]{0});
+
+    glGetShaderInfoLog(m_id, size, nullptr, buffer.get());
+    result.append(buffer.get(), static_cast<size_t>(size));
 
     return result;
 }
