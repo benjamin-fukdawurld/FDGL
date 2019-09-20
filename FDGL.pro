@@ -33,7 +33,9 @@ SOURCES += \
     src/OpenGLShaderProgram.cpp \
     src/OpenGLUtils.cpp \
     src/OpenGLVertexArray.cpp \
-    src/OpenGLTexture.cpp
+    src/OpenGLTexture.cpp \
+    src/OpenGLFrameBuffer.cpp \
+    src/OpenGLRenderBuffer.cpp
 
 HEADERS += \
     include/FDGL/BaseOpenGLContext.h \
@@ -44,7 +46,9 @@ HEADERS += \
     include/FDGL/OpenGLShaderProgram.h \
     include/FDGL/OpenGLUtils.h \
     include/FDGL/OpenGLVertexArray.h \
-    include/FDGL/OpenGLTexture.h
+    include/FDGL/OpenGLTexture.h \
+    include/FDGL/OpenGLFrameBuffer.h \
+    include/FDGL/OpenGLRenderBuffer.h
 
 unix {
     target.path = /usr/lib

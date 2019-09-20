@@ -39,6 +39,57 @@ namespace FDGL
         DynamicCopy = GL_DYNAMIC_COPY
     };
 
+    enum class FrameBufferTarget : uint32_t
+    {
+        Invalid = GL_INVALID_ENUM,
+        Write = GL_DRAW_FRAMEBUFFER,
+        Read = GL_READ_FRAMEBUFFER,
+        ReadWrite = GL_FRAMEBUFFER
+    };
+
+    enum class FrameBufferAttachment : uint32_t
+    {
+        Depth = GL_DEPTH_ATTACHMENT,
+        Stencil = GL_STENCIL_ATTACHMENT,
+        DepthStencil = GL_DEPTH_STENCIL_ATTACHMENT,
+
+        color0 = GL_COLOR_ATTACHMENT0,
+        color1 = GL_COLOR_ATTACHMENT1,
+        color2 = GL_COLOR_ATTACHMENT2,
+        color3 = GL_COLOR_ATTACHMENT3,
+        color4 = GL_COLOR_ATTACHMENT4,
+        color5 = GL_COLOR_ATTACHMENT5,
+        color6 = GL_COLOR_ATTACHMENT6,
+        color7 = GL_COLOR_ATTACHMENT7,
+        color8 = GL_COLOR_ATTACHMENT8,
+        color9 = GL_COLOR_ATTACHMENT9,
+
+        color10 = GL_COLOR_ATTACHMENT10,
+        color11 = GL_COLOR_ATTACHMENT11,
+        color12 = GL_COLOR_ATTACHMENT12,
+        color13 = GL_COLOR_ATTACHMENT13,
+        color14 = GL_COLOR_ATTACHMENT14,
+        color15 = GL_COLOR_ATTACHMENT15,
+        color16 = GL_COLOR_ATTACHMENT16,
+        color17 = GL_COLOR_ATTACHMENT17,
+        color18 = GL_COLOR_ATTACHMENT18,
+        color19 = GL_COLOR_ATTACHMENT19,
+
+        color20 = GL_COLOR_ATTACHMENT20,
+        color21 = GL_COLOR_ATTACHMENT21,
+        color22 = GL_COLOR_ATTACHMENT22,
+        color23 = GL_COLOR_ATTACHMENT23,
+        color24 = GL_COLOR_ATTACHMENT24,
+        color25 = GL_COLOR_ATTACHMENT25,
+        color26 = GL_COLOR_ATTACHMENT26,
+        color27 = GL_COLOR_ATTACHMENT27,
+        color28 = GL_COLOR_ATTACHMENT28,
+        color29 = GL_COLOR_ATTACHMENT29,
+
+        color30 = GL_COLOR_ATTACHMENT30,
+        color31 = GL_COLOR_ATTACHMENT31
+    };
+
     enum class ShaderType : uint32_t
     {
         Invalid = GL_INVALID_ENUM,
