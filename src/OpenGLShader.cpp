@@ -1,5 +1,8 @@
 #include <FDGL/OpenGLShader.h>
 
+#include <FDCore/FileUtils.h>
+
+#include <iostream>
 #include <memory>
 
 FDGL::OpenGLShaderWrapper::OpenGLShaderWrapper(FDGL::OpenGLShaderWrapper &&other) : OpenGLShaderWrapper()
@@ -84,6 +87,28 @@ std::string FDGL::OpenGLShaderWrapper::getCompileErrors() const
     return result;
 }
 
+FDGL::OpenGLShaderWrapper FDGL::OpenGLShaderWrapper::createShader(FDGL::ShaderType type, const std::string &source, std::string *err)
+{
+    FDGL::OpenGLShaderWrapper shader;
+    shader.create(type);
+    shader.setSource(source);
+    if(!shader.compile())
+    {
+        if(err)
+            *err = shader.getCompileErrors();
+
+        shader.destroy();
+    }
+
+    return shader;
+}
+
+FDGL::OpenGLShaderWrapper FDGL::OpenGLShaderWrapper::loadShader(FDGL::ShaderType type, const std::string &filePath, std::string *err)
+{
+    std::unique_ptr<char[]> source = FDCore::readFile(filePath);
+    return createShader(type, source.get(), err);
+}
+
 template<>
 bool FDGL::is<FDGL::OpenGLShaderWrapper>(const FDGL::OpenGLResourceWrapper &res)
 {
@@ -106,4 +131,64 @@ FDGL::OpenGLShaderWrapper FDGL::as<FDGL::OpenGLShaderWrapper>(FDGL::OpenGLResour
         return FDGL::OpenGLShaderWrapper(res);
 
     return FDGL::OpenGLShaderWrapper();
+}
+
+FDGL::OpenGLShaderWrapper FDGL::operator ""_vert(const char *filePath, size_t)
+{
+    std::string err;
+    auto shad = OpenGLShaderWrapper::loadShader(ShaderType::Vertex, filePath, &err);
+    if(!err.empty())
+        std::cerr << err << std::endl;
+
+    return shad;
+}
+
+FDGL::OpenGLShaderWrapper FDGL::operator ""_tesc(const char *filePath, size_t)
+{
+    std::string err;
+    auto shad = OpenGLShaderWrapper::loadShader(ShaderType::TesselationControl, filePath, &err);
+    if(!err.empty())
+        std::cerr << err << std::endl;
+
+    return shad;
+}
+
+FDGL::OpenGLShaderWrapper FDGL::operator ""_tese(const char *filePath, size_t)
+{
+    std::string err;
+    auto shad = OpenGLShaderWrapper::loadShader(ShaderType::TesselationEvaluation, filePath, &err);
+    if(!err.empty())
+        std::cerr << err << std::endl;
+
+    return shad;
+}
+
+FDGL::OpenGLShaderWrapper FDGL::operator ""_geom(const char *filePath, size_t)
+{
+    std::string err;
+    auto shad = OpenGLShaderWrapper::loadShader(ShaderType::Geometry, filePath, &err);
+    if(!err.empty())
+        std::cerr << err << std::endl;
+
+    return shad;
+}
+
+FDGL::OpenGLShaderWrapper FDGL::operator ""_frag(const char *filePath, size_t)
+{
+    std::string err;
+    auto shad = OpenGLShaderWrapper::loadShader(ShaderType::Fragment, filePath, &err);
+    if(!err.empty())
+        std::cerr << err << std::endl;
+
+    return shad;
+}
+
+FDGL::OpenGLShaderWrapper FDGL::operator ""_comp(const char *filePath, size_t)
+{
+    std::string err;
+    auto shad = OpenGLShaderWrapper::loadShader(ShaderType::Compute, filePath, &err);
+    if(!err.empty())
+        std::cerr << err << std::endl;
+
+    return shad;
 }

@@ -16,11 +16,13 @@ OBJECTS_DIR = ../build/.obj/$${TARGET}
 
 DEPENDPATH += \
     include \
+    ../FDCore/include \
     ../thirdparty/glad/include \
     ../thirdparty/glm \
 
 INCLUDEPATH += \
     include \
+    ../FDCore/include \
     ../thirdparty/glad/include \
     ../thirdparty/glm \
 
@@ -45,6 +47,7 @@ HEADERS += \
     include/FDGL/OpenGLShader.h \
     include/FDGL/OpenGLShaderProgram.h \
     include/FDGL/OpenGLUtils.h \
+    include/FDGL/OpenGLUtilsForward.h \
     include/FDGL/OpenGLVertexArray.h \
     include/FDGL/OpenGLTexture.h \
     include/FDGL/OpenGLFrameBuffer.h \

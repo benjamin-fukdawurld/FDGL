@@ -4,6 +4,8 @@
 #include <vector>
 #include <glad/glad.h>
 
+#include <FDGL/OpenGLUtilsForward.h>
+
 namespace FDGL
 {
     enum class BufferTarget : uint32_t
@@ -37,6 +39,17 @@ namespace FDGL
         DynamicDraw = GL_DYNAMIC_DRAW,
         DynamicRead = GL_DYNAMIC_READ,
         DynamicCopy = GL_DYNAMIC_COPY
+    };
+
+    enum BufferMappingAccessFlag : uint32_t
+    {
+        Invalid = GL_INVALID_ENUM,
+        Write = GL_MAP_WRITE_BIT,
+        Read = GL_MAP_READ_BIT,
+        ReadWrite = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT,
+        Persistent = GL_MAP_PERSISTENT_BIT,
+        Coherent = GL_MAP_COHERENT_BIT,
+        ExplicitFlush = GL_MAP_FLUSH_EXPLICIT_BIT
     };
 
     enum class FrameBufferTarget : uint32_t
@@ -145,6 +158,36 @@ namespace FDGL
     };
 
     std::vector<GLenum> getLastOpenGLErrors();
+
+    template<typename ...Args>
+    bool setUniform(uint32_t shader, const std::string &name, const Args... value)
+    {
+        int location = glGetUniformLocation(shader, name.c_str());
+        if(location < 0)
+            return false;
+
+        return setUniform(shader, location, value...);
+    }
+
+    template<typename T, size_t size>
+    bool setUniform(uint32_t shader, const std::string &name, size_t count, const T *value)
+    {
+        int location = glGetUniformLocation(shader, name.c_str());
+        if(location < 0)
+            return false;
+
+        return setUniform<T, size>(location, count, value);
+    }
+
+    template<typename T, size_t nb_component, bool normalize>
+    bool setAttrib(uint32_t shader, const std::string &name, size_t stride, const T *value)
+    {
+        int location = glGetUniformLocation(shader, name.c_str());
+        if(location < 0)
+            return false;
+
+        return setUniform<T, nb_component, normalize>(location, stride, value);
+    }
 }
 
 #endif // OPENGLUTILS_H

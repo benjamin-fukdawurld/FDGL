@@ -37,6 +37,9 @@ namespace FDGL
             bool compile();
 
             std::string getCompileErrors() const;
+
+            static OpenGLShaderWrapper createShader(ShaderType type, const std::string &source, std::string *err = nullptr);
+            static OpenGLShaderWrapper loadShader(ShaderType type, const std::string &filePath, std::string *err = nullptr);
     };
 
     template<>
@@ -49,6 +52,18 @@ namespace FDGL
     OpenGLShaderWrapper as<OpenGLShaderWrapper>(OpenGLResourceWrapper &res);
 
     typedef OwnedRessource<OpenGLShaderWrapper> OpenGLShader;
+
+    OpenGLShaderWrapper operator ""_vert(const char *filePath, size_t);
+
+    OpenGLShaderWrapper operator ""_tesc(const char *filePath, size_t);
+
+    OpenGLShaderWrapper operator ""_tese(const char *filePath, size_t);
+
+    OpenGLShaderWrapper operator ""_geom(const char *filePath, size_t);
+
+    OpenGLShaderWrapper operator ""_frag(const char *filePath, size_t);
+
+    OpenGLShaderWrapper operator ""_comp(const char *filePath, size_t);
 }
 
 #endif // OPENGLSHADER_H

@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <memory>
+#include <cstring>
+
+#include <FDCore/FileUtils.h>
 
 FDGL::OpenGLShaderProgramWrapper::OpenGLShaderProgramWrapper(FDGL::OpenGLShaderProgramWrapper &&other) : OpenGLShaderProgramWrapper()
 {
@@ -12,6 +15,20 @@ FDGL::OpenGLShaderProgramWrapper::OpenGLShaderProgramWrapper(FDGL::OpenGLResourc
 {
     if(FDGL::is<OpenGLShaderProgramWrapper>(other))
         *this = std::move(other);
+}
+
+FDGL::OpenGLShaderProgramWrapper::OpenGLShaderProgramWrapper(std::initializer_list<FDGL::OpenGLShader> l) :
+    FDGL::OpenGLShaderProgramWrapper()
+{
+    create();
+    for(auto &shad : l)
+        attach(shad);
+
+    if(!link())
+    {
+        std::cerr << getLinkErrors() << std::endl;
+        destroy();
+    }
 }
 
 FDGL::OpenGLShaderProgramWrapper &FDGL::OpenGLShaderProgramWrapper::operator=(FDGL::OpenGLResourceWrapper &&other)
@@ -90,6 +107,36 @@ void FDGL::OpenGLShaderProgramWrapper::unbind()
     glUseProgram(0);
 }
 
+size_t FDGL::OpenGLShaderProgramWrapper::getBinarySize()
+{
+    int size;
+    glGetProgramiv(m_id, GL_PROGRAM_BINARY_LENGTH, &size);
+    return static_cast<size_t>(size);
+}
+
+std::unique_ptr<uint8_t[]> FDGL::OpenGLShaderProgramWrapper::getBinary()
+{
+    size_t size = getBinarySize();
+    std::unique_ptr<uint8_t[]> output(new uint8_t[size + sizeof(GLenum) + sizeof(size_t)]);
+    memcpy(output.get(), &size, sizeof(size_t));
+    glGetProgramBinary(m_id,
+                       static_cast<GLsizei>(size),
+                       nullptr,
+                       reinterpret_cast<GLenum*>(output.get() + sizeof (size_t)),
+                       reinterpret_cast<void*>(output.get() + sizeof (size_t) + sizeof(GLenum)));
+
+    return output;
+}
+
+void FDGL::OpenGLShaderProgramWrapper::loadBinary(uint8_t bin[])
+{
+    size_t *size = reinterpret_cast<size_t*>(bin);
+    GLenum *format = reinterpret_cast<GLenum *>(bin + sizeof (size_t));
+    void *data = reinterpret_cast<void*>(bin + sizeof (size_t) + sizeof(GLenum));
+
+    glProgramBinary(m_id, *format, data, static_cast<GLsizei>(*size));
+}
+
 template<>
 bool FDGL::is<FDGL::OpenGLShaderProgramWrapper>(const FDGL::OpenGLResourceWrapper &res)
 {
@@ -112,4 +159,18 @@ FDGL::OpenGLShaderProgramWrapper FDGL::as<FDGL::OpenGLShaderProgramWrapper>(FDGL
         return FDGL::OpenGLShaderProgramWrapper(res);
 
     return FDGL::OpenGLShaderProgramWrapper();
+}
+
+FDGL::OpenGLShaderProgramWrapper FDGL::operator ""_shad(const char *filePath, size_t)
+{
+    FDGL::OpenGLShaderProgramWrapper program;
+    size_t size;
+    std::unique_ptr<uint8_t[]> bin = FDCore::readBinaryFile(filePath, size);
+    if(size < (sizeof(size_t) + sizeof(GLenum)))
+        return program;
+
+    program.create();
+    program.loadBinary(bin.get());
+
+    return program;
 }

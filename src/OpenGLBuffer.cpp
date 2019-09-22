@@ -68,6 +68,38 @@ void FDGL::OpenGLBufferWrapper::unbind(FDGL::BufferTarget target)
     glBindBuffer(static_cast<GLenum>(target), 0);
 }
 
+size_t FDGL::OpenGLBufferWrapper::size() const
+{
+    GLint size;
+    glGetNamedBufferParameteriv(m_id, GL_BUFFER_SIZE, &size);
+    return static_cast<size_t>(size);
+}
+
+FDGL::BufferUsage FDGL::OpenGLBufferWrapper::getUsage() const
+{
+    GLint usage;
+    glGetNamedBufferParameteriv(m_id, GL_BUFFER_USAGE, &usage);
+    return static_cast<FDGL::BufferUsage>(usage);
+}
+
+FDGL::OpenGLBufferWrapper FDGL::OpenGLBufferWrapper::copy() const
+{
+    FDGL::OpenGLBufferWrapper result;
+    size_t s = size();
+    result.create();
+    result.allocate(s, getUsage());
+    copy(result, 0, 0, s);
+
+    return result;
+}
+
+void FDGL::OpenGLBufferWrapper::copy(FDGL::OpenGLBufferWrapper &buffer, size_t readOffset, size_t writeOffset, size_t size) const
+{
+    glCopyNamedBufferSubData(m_id, buffer.m_id,
+                             static_cast<GLintptr>(readOffset), static_cast<GLintptr>(writeOffset),
+                             static_cast<GLsizeiptr>(size));
+}
+
 FDGL::OpenGLBufferWrapper &FDGL::OpenGLBufferWrapper::operator=(const FDGL::OpenGLBufferWrapper &other)
 {
     OpenGLResourceWrapper::operator=(other);
@@ -89,7 +121,12 @@ FDGL::OpenGLBufferWrapper &FDGL::OpenGLBufferWrapper::operator=(const FDGL::Open
     return *this;
 }
 
-FDGL::OpenGLBufferWrapper &FDGL::OpenGLBufferBindGuard::getWrapper() const
+FDGL::OpenGLBufferWrapper &FDGL::OpenGLBufferBindGuard::getWrapper()
+{
+    return m_wrapper;
+}
+
+const FDGL::OpenGLBufferWrapper &FDGL::OpenGLBufferBindGuard::getWrapper() const
 {
     return m_wrapper;
 }
