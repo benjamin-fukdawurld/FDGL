@@ -17,12 +17,14 @@ OBJECTS_DIR = ../build/.obj/$${TARGET}
 DEPENDPATH += \
     include \
     ../FDCore/include \
+    ../FD3D/include \
     ../thirdparty/glad/include \
     ../thirdparty/glm \
 
 INCLUDEPATH += \
     include \
     ../FDCore/include \
+    ../FD3D/include \
     ../thirdparty/glad/include \
     ../thirdparty/glm \
 
@@ -37,7 +39,8 @@ SOURCES += \
     src/OpenGLVertexArray.cpp \
     src/OpenGLTexture.cpp \
     src/OpenGLFrameBuffer.cpp \
-    src/OpenGLRenderBuffer.cpp
+    src/OpenGLRenderBuffer.cpp \
+    src/BufferedMesh.cpp
 
 HEADERS += \
     include/FDGL/BaseOpenGLContext.h \
@@ -51,7 +54,8 @@ HEADERS += \
     include/FDGL/OpenGLVertexArray.h \
     include/FDGL/OpenGLTexture.h \
     include/FDGL/OpenGLFrameBuffer.h \
-    include/FDGL/OpenGLRenderBuffer.h
+    include/FDGL/OpenGLRenderBuffer.h \
+    include/FDGL/BufferedMesh.h
 
 unix {
     target.path = /usr/lib
