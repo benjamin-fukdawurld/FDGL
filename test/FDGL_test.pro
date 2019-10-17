@@ -11,19 +11,23 @@ OBJECTS_DIR = ../../build/.obj/$${TARGET}
 
 LIBS += -L../../build/lib -lglad -lFDGL -lFD3D -lFDCore
 LIBS += -lglfw -lGL -lpthread -ldl -lX11 -lXrandr -lstdc++
+LIBS += -L../../thirdparty/assimp/lib -lassimp
+
 
 DEPENDPATH += \
     ../include \
     ../../thirdparty/glad/include \
     ../../thirdparty/stb/include \
-    ../../thirdparty/glm
+    ../../thirdparty/glm \
+    ../../thirdparty/assimp/include \
 
 
 INCLUDEPATH += \
     ../include \
     ../../thirdparty/glad/include \
     ../../thirdparty/stb/include \
-    ../../thirdparty/glm
+    ../../thirdparty/glm \
+    ../../thirdparty/assimp/include \
 
 SOURCES += \
     GLFWImpl.cpp \
