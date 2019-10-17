@@ -12,9 +12,12 @@
 
 namespace FDGL
 {
-    template<typename VertexType = FD3D::Vertex>
+    template<typename T = FD3D::Vertex>
     class BufferedMesh
     {
+        public:
+            typedef T VertexType;
+
         protected:
             std::vector<FD3D::Texture> m_textures;
             uint32_t m_vbo;
@@ -28,16 +31,22 @@ namespace FDGL
                 m_vao(0)
             {}
 
-            BufferedMesh(const FD3D::Mesh &mesh, FDGL::BufferUsage usage = FDGL::BufferUsage::StaticDraw,
-                         std::function<void(BufferedMesh &)> vaoFunction = std::function<void(BufferedMesh &)>()) :
-                BufferedMesh(mesh.getVertices(), mesh.getIndices(), mesh.getTextures(), usage, vaoFunction)
+            BufferedMesh(const FD3D::Mesh<T> &mesh,
+                         FDGL::BufferUsage usage = FDGL::BufferUsage::StaticDraw,
+                         std::function<void(BufferedMesh &)> vaoFunction =
+                            std::function<void(BufferedMesh &)>()) :
+                BufferedMesh(mesh.getVertices(),
+                             mesh.getIndices(),
+                             mesh.getTextures(),
+                             usage, vaoFunction)
             {}
 
             BufferedMesh(const std::vector<FD3D::Vertex> &vertices,
-                 const std::vector<uint32_t> &indices,
-                 const std::vector<FD3D::Texture> textures,
-                 FDGL::BufferUsage usage = FDGL::BufferUsage::StaticDraw,
-                 std::function<void(BufferedMesh &)> vaoFunction = std::function<void(BufferedMesh &)>()) :
+                         const std::vector<uint32_t> &indices,
+                         const std::vector<FD3D::Texture> textures,
+                         FDGL::BufferUsage usage = FDGL::BufferUsage::StaticDraw,
+                         std::function<void(BufferedMesh &)> vaoFunction =
+                            std::function<void(BufferedMesh &)>()) :
                 m_textures(textures)
             {
                 setVertices(vertices, usage);
@@ -66,7 +75,9 @@ namespace FDGL
                 FDGL::OpenGLBufferWrapper vbo(m_vbo);
                 vbo.destroy();
                 vbo.create();
-                vbo.allocate(vertices.size() * VertexType::numberOfComponents * sizeof(float), usage, vertices.data());
+                vbo.allocate(vertices.size() * T::numberOfComponents * sizeof(float),
+                             usage,
+                             vertices.data());
                 m_vbo = *vbo;
             }
 

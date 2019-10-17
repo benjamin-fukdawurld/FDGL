@@ -39,8 +39,7 @@ SOURCES += \
     src/OpenGLVertexArray.cpp \
     src/OpenGLTexture.cpp \
     src/OpenGLFrameBuffer.cpp \
-    src/OpenGLRenderBuffer.cpp \
-    src/BufferedMesh.cpp
+    src/OpenGLRenderBuffer.cpp
 
 HEADERS += \
     include/FDGL/BaseOpenGLContext.h \
