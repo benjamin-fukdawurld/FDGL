@@ -16,6 +16,7 @@ LIBS += -L../../thirdparty/assimp/lib -lassimp
 
 DEPENDPATH += \
     ../include \
+    ../../FD3D/include \
     ../../thirdparty/glad/include \
     ../../thirdparty/stb/include \
     ../../thirdparty/glm \
@@ -24,6 +25,7 @@ DEPENDPATH += \
 
 INCLUDEPATH += \
     ../include \
+    ../../FD3D/include \
     ../../thirdparty/glad/include \
     ../../thirdparty/stb/include \
     ../../thirdparty/glm \
@@ -38,7 +40,7 @@ HEADERS += \
     GLFWImpl.h \
     GLUtils.h
 
-DISTFILES += \
+OTHER_FILES += \
     resources/vertex.vert \
     resources/frag.frag \
     resources/wall.jpg
