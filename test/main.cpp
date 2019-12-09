@@ -2,7 +2,7 @@
 
 #include "GLFWImpl.h"
 
-#include <FD3D/ModelLoader.h>
+#include <FD3D/Mesh/ModelLoader.h>
 
 using namespace std;
 
