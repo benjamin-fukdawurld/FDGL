@@ -16,6 +16,7 @@ LIBS += -L../../thirdparty/assimp/lib -lassimp
 
 DEPENDPATH += \
     ../include \
+    ../../FDCore/include \
     ../../FD3D/include \
     ../../thirdparty/glad/include \
     ../../thirdparty/stb/include \
@@ -25,6 +26,7 @@ DEPENDPATH += \
 
 INCLUDEPATH += \
     ../include \
+    ../../FDCore/include \
     ../../FD3D/include \
     ../../thirdparty/glad/include \
     ../../thirdparty/stb/include \
