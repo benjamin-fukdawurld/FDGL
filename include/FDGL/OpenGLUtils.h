@@ -182,11 +182,11 @@ namespace FDGL
     template<typename T, size_t nb_component, bool normalize>
     bool setAttrib(uint32_t shader, const std::string &name, size_t stride, const T *value)
     {
-        int location = glGetUniformLocation(shader, name.c_str());
+        int location = glGetAttribLocation(shader, name.c_str());
         if(location < 0)
             return false;
 
-        return setUniform<T, nb_component, normalize>(location, stride, value);
+        return setAttrib<T, nb_component, normalize>(location, stride, value);
     }
 }
 
