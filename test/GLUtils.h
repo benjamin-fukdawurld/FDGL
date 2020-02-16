@@ -6,9 +6,13 @@
 #include <FDGL/OpenGLTexture.h>
 #include <FDGL/OpenGLShaderProgram.h>
 
+#include <assimp/texture.h>
+
 std::string loadFile(const std::string &filePath);
 
 FDGL::OpenGLTextureWrapper loadTexture(const std::string &filePath);
+
+FDGL::OpenGLTextureWrapper loadTexture(const aiTexture *input);
 
 FDGL::OpenGLShaderProgramWrapper createShaderProgram();
 
