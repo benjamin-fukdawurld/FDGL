@@ -189,6 +189,25 @@ namespace FDGL
         return setAttrib<T, nb_component, normalize>(location, stride, value);
     }
 
+    template<GLenum type, size_t nb_component, bool normalize = false>
+    bool setAttribFromBuffer(int location, size_t stride, const uintptr_t value)
+    {
+        glVertexAttribPointer(static_cast<uint>(location), nb_component,
+                               type, normalize, static_cast<GLsizei>(stride), reinterpret_cast<void*>(value));
+        return true;
+    }
+
+    template<GLenum type, size_t nb_component, bool normalize = false>
+    bool setAttribFromBuffer(uint32_t shader, const std::string &name,
+                             size_t stride, const uintptr_t value)
+    {
+        int location = glGetAttribLocation(shader, name.c_str());
+        if(location < 0)
+            return false;
+
+        return setAttribFromBuffer<type, nb_component, normalize>(location, stride, value);
+    }
+
     inline void enableAttrib(uint location)
     {
         glEnableVertexAttribArray(location);

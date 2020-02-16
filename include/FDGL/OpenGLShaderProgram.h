@@ -89,6 +89,20 @@ namespace FDGL
             {
                 return FDGL::setAttrib<T, nb_component, normalize>(m_id, name, stride, value);
             }
+
+            template<GLenum type, size_t nb_component, bool normalize = false>
+            bool setAttribFromBuffer(int location, size_t stride, const uintptr_t value)
+            {
+                return FDGL::setAttribFromBuffer<type, nb_component, normalize>(
+                            location, stride, value);
+            }
+
+            template<GLenum type, size_t nb_component, bool normalize = false>
+            bool setAttribFromBuffer(const std::string &name, size_t stride, const uintptr_t value)
+            {
+                return FDGL::setAttribFromBuffer<type, nb_component, normalize>(
+                            m_id, name, stride, value);
+            }
     };
 
     template<>
