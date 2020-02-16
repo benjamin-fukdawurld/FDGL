@@ -23,6 +23,16 @@ void FDGL::BaseOpenGLContext::disableDepth()
     disable(GL_DEPTH);
 }
 
+void FDGL::BaseOpenGLContext::enableDepthMask()
+{
+    glDepthMask(GL_TRUE);
+}
+
+void FDGL::BaseOpenGLContext::disableDepthMask()
+{
+    glDepthMask(GL_FALSE);
+}
+
 void FDGL::BaseOpenGLContext::enableBlend()
 {
     enable(GL_BLEND);

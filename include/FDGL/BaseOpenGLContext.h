@@ -20,6 +20,9 @@ namespace FDGL
             bool isDepthEnabled() const;
             void disableDepth();
 
+            void enableDepthMask();
+            void disableDepthMask();
+
             void enableBlend();
             bool isBlendEnabled() const;
             void disableBlend();
