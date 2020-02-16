@@ -188,6 +188,11 @@ namespace FDGL
 
         return setAttrib<T, nb_component, normalize>(location, stride, value);
     }
+
+    inline void enableAttrib(uint location)
+    {
+        glEnableVertexAttribArray(location);
+    }
 }
 
 #endif // OPENGLUTILS_H
