@@ -99,7 +99,7 @@ namespace FDGL
     };
 
     template<BufferMappingAccessFlag access = BufferMappingAccessFlag::ReadWrite>
-    class OpenGLBufferMap
+    class OpenGLBufferMappingGuard
     {
         protected:
             OpenGLBufferWrapper &m_wrapper;
@@ -108,7 +108,7 @@ namespace FDGL
             size_t m_size;
 
         public:
-            OpenGLBufferMap(OpenGLBufferWrapper &wrapper) :
+            OpenGLBufferMappingGuard(OpenGLBufferWrapper &wrapper) :
                 m_wrapper(wrapper),
                 m_map(nullptr),
                 m_offset(0),
@@ -117,7 +117,7 @@ namespace FDGL
                 m_map = glMapNamedBuffer(*m_wrapper, access);
             }
 
-            OpenGLBufferMap(OpenGLBufferWrapper &wrapper, size_t offset, size_t size) :
+            OpenGLBufferMappingGuard(OpenGLBufferWrapper &wrapper, size_t offset, size_t size) :
                 m_wrapper(wrapper),
                 m_map(nullptr),
                 m_offset(offset),
@@ -127,7 +127,7 @@ namespace FDGL
                                               static_cast<GLsizeiptr>(m_size),  access);
             }
 
-            ~OpenGLBufferMap()
+            ~OpenGLBufferMappingGuard()
             {
                 glUnmapNamedBuffer(*m_wrapper);
             }
