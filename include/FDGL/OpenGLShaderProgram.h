@@ -73,21 +73,21 @@ namespace FDGL
             }
 
             template<typename ...Args>
-            bool setUniform(uint32_t shader, const std::string &name, const Args... values)
+            bool setUniform(const std::string &name, const Args... values)
             {
-                return FDGL::setUniform<Args...>(shader, name, values...);
+                return FDGL::setUniform<Args...>(m_id, name, values...);
             }
 
             template<typename T, size_t size = 1>
-            bool setUniform(uint32_t shader, const std::string &name, size_t count, const T *value)
+            bool setUniform(const std::string &name, size_t count, const T *value)
             {
-                return FDGL::setUniform<T, size>(shader, name, count, value);
+                return FDGL::setUniform<T, size>(m_id, name, count, value);
             }
 
             template<typename T, size_t nb_component, bool normalize = false>
-            bool setAttrib(uint32_t shader, const std::string &name, size_t stride, const T *value)
+            bool setAttrib(const std::string &name, size_t stride, const T *value)
             {
-                return FDGL::setAttrib<T, nb_component, normalize>(shader, name, stride, value);
+                return FDGL::setAttrib<T, nb_component, normalize>(m_id, name, stride, value);
             }
     };
 
