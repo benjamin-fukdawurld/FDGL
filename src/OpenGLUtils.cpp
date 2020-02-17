@@ -237,86 +237,170 @@ bool FDGL::setUniform<uint, 4>(int location, size_t count, const uint *value)
 }
 
 template<>
-bool FDGL::setUniform<glm::vec2, 1>(int location, size_t count, const glm::vec2 *value)
+bool FDGL::setUniform<glm::vec2>(int location, size_t count, const glm::vec2 *value)
 {
     glUniform2fv(location, static_cast<GLsizei>(count), glm::value_ptr(*value));
     return true;
 }
 
 template<>
-bool FDGL::setUniform<glm::vec3, 1>(int location, size_t count, const glm::vec3 *value)
+bool FDGL::setUniform<glm::vec3>(int location, size_t count, const glm::vec3 *value)
 {
     glUniform3fv(location, static_cast<GLsizei>(count), glm::value_ptr(*value));
     return true;
 }
 
 template<>
-bool FDGL::setUniform<glm::vec4, 1>(int location, size_t count, const glm::vec4 *value)
+bool FDGL::setUniform<glm::vec4>(int location, size_t count, const glm::vec4 *value)
 {
     glUniform4fv(location, static_cast<GLsizei>(count), glm::value_ptr(*value));
     return true;
 }
 
 template<>
-bool FDGL::setUniform<glm::mat2, 1>(int location, size_t count, const glm::mat2 *value)
+bool FDGL::setUniform<glm::mat2>(int location, size_t count, const glm::mat2 *value)
 {
     glUniformMatrix2fv(location, static_cast<GLsizei>(count), false, glm::value_ptr(*value));
     return true;
 }
 
 template<>
-bool FDGL::setUniform<glm::mat2x3, 1>(int location, size_t count, const glm::mat2x3 *value)
+bool FDGL::setUniform<glm::mat2x3>(int location, size_t count, const glm::mat2x3 *value)
 {
     glUniformMatrix2x3fv(location, static_cast<GLsizei>(count), false, glm::value_ptr(*value));
     return true;
 }
 
 template<>
-bool FDGL::setUniform<glm::mat2x4, 1>(int location, size_t count, const glm::mat2x4 *value)
+bool FDGL::setUniform<glm::mat2x4>(int location, size_t count, const glm::mat2x4 *value)
 {
     glUniformMatrix2x4fv(location, static_cast<GLsizei>(count), false, glm::value_ptr(*value));
     return true;
 }
 
 template<>
-bool FDGL::setUniform<glm::mat3, 1>(int location, size_t count, const glm::mat3 *value)
+bool FDGL::setUniform<glm::mat3>(int location, size_t count, const glm::mat3 *value)
 {
     glUniformMatrix3fv(location, static_cast<GLsizei>(count), false, glm::value_ptr(*value));
     return true;
 }
 
 template<>
-bool FDGL::setUniform<glm::mat3x2, 1>(int location, size_t count, const glm::mat3x2 *value)
+bool FDGL::setUniform<glm::mat3x2>(int location, size_t count, const glm::mat3x2 *value)
 {
     glUniformMatrix3x2fv(location, static_cast<GLsizei>(count), false, glm::value_ptr(*value));
     return true;
 }
 
 template<>
-bool FDGL::setUniform<glm::mat3x4, 1>(int location, size_t count, const glm::mat3x4 *value)
+bool FDGL::setUniform<glm::mat3x4>(int location, size_t count, const glm::mat3x4 *value)
 {
     glUniformMatrix3x4fv(location, static_cast<GLsizei>(count), false, glm::value_ptr(*value));
     return true;
 }
 
 template<>
-bool FDGL::setUniform<glm::mat4, 1>(int location, size_t count, const glm::mat4 *value)
+bool FDGL::setUniform<glm::mat4>(int location, size_t count, const glm::mat4 *value)
 {
     glUniformMatrix4fv(location, static_cast<GLsizei>(count), false, glm::value_ptr(*value));
     return true;
 }
 
 template<>
-bool FDGL::setUniform<glm::mat4x2, 1>(int location, size_t count, const glm::mat4x2 *value)
+bool FDGL::setUniform<glm::mat4x2>(int location, size_t count, const glm::mat4x2 *value)
 {
     glUniformMatrix4x2fv(location, static_cast<GLsizei>(count), false, glm::value_ptr(*value));
     return true;
 }
 
 template<>
-bool FDGL::setUniform<glm::mat4x3, 1>(int location, size_t count, const glm::mat4x3 *value)
+bool FDGL::setUniform<glm::mat4x3>(int location, size_t count, const glm::mat4x3 *value)
 {
     glUniformMatrix4x3fv(location, static_cast<GLsizei>(count), false, glm::value_ptr(*value));
+    return true;
+}
+
+template<>
+bool FDGL::setUniform<glm::vec2>(int location, const glm::vec2 &value)
+{
+    glUniform2fv(location, 1, glm::value_ptr(value));
+    return true;
+}
+
+template<>
+bool FDGL::setUniform<glm::vec3>(int location, const glm::vec3 &value)
+{
+    glUniform3fv(location, 1, glm::value_ptr(value));
+    return true;
+}
+
+template<>
+bool FDGL::setUniform<glm::vec4>(int location, const glm::vec4 &value)
+{
+    glUniform4fv(location, 1, glm::value_ptr(value));
+    return true;
+}
+
+template<>
+bool FDGL::setUniform<glm::mat2>(int location, const glm::mat2 &value)
+{
+    glUniformMatrix2fv(location, 1, false, glm::value_ptr(value));
+    return true;
+}
+
+template<>
+bool FDGL::setUniform<glm::mat2x3>(int location, const glm::mat2x3 &value)
+{
+    glUniformMatrix2x3fv(location, 1, false, glm::value_ptr(value));
+    return true;
+}
+
+template<>
+bool FDGL::setUniform<glm::mat2x4>(int location, const glm::mat2x4 &value)
+{
+    glUniformMatrix2x4fv(location, 1, false, glm::value_ptr(value));
+    return true;
+}
+
+template<>
+bool FDGL::setUniform<glm::mat3>(int location, const glm::mat3 &value)
+{
+    glUniformMatrix3fv(location, 1, false, glm::value_ptr(value));
+    return true;
+}
+
+template<>
+bool FDGL::setUniform<glm::mat3x2>(int location, const glm::mat3x2 &value)
+{
+    glUniformMatrix3x2fv(location, 1, false, glm::value_ptr(value));
+    return true;
+}
+
+template<>
+bool FDGL::setUniform<glm::mat3x4>(int location, const glm::mat3x4 &value)
+{
+    glUniformMatrix3x4fv(location, 1, false, glm::value_ptr(value));
+    return true;
+}
+
+template<>
+bool FDGL::setUniform<glm::mat4>(int location, const glm::mat4 &value)
+{
+    glUniformMatrix4fv(location, 1, false, glm::value_ptr(value));
+    return true;
+}
+
+template<>
+bool FDGL::setUniform<glm::mat4x2>(int location, const glm::mat4x2 &value)
+{
+    glUniformMatrix4x2fv(location, 1, false, glm::value_ptr(value));
+    return true;
+}
+
+template<>
+bool FDGL::setUniform<glm::mat4x3>(int location, const glm::mat4x3 &value)
+{
+    glUniformMatrix4x3fv(location, 1, false, glm::value_ptr(value));
     return true;
 }
 

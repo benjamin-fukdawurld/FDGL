@@ -122,40 +122,64 @@ namespace FDGL
     bool setUniform<uint, 4>(int location, size_t count, const uint *value);
 
     template<>
-    bool setUniform<glm::vec2, 1>(int location, size_t count, const glm::vec2 *value);
+    bool setUniform<glm::vec2>(int location, size_t count, const glm::vec2 *value);
 
     template<>
-    bool setUniform<glm::vec3, 1>(int location, size_t count, const glm::vec3 *value);
+    bool setUniform<glm::vec3>(int location, size_t count, const glm::vec3 *value);
 
     template<>
-    bool setUniform<glm::vec4, 1>(int location, size_t count, const glm::vec4 *value);
+    bool setUniform<glm::vec4>(int location, size_t count, const glm::vec4 *value);
 
     template<>
-    bool setUniform<glm::mat2, 1>(int location, size_t count, const glm::mat2 *value);
+    bool setUniform<glm::mat2>(int location, size_t count, const glm::mat2 *value);
 
     template<>
-    bool setUniform<glm::mat2x3, 1>(int location, size_t count, const glm::mat2x3 *value);
+    bool setUniform<glm::mat2x3>(int location, size_t count, const glm::mat2x3 *value);
 
     template<>
-    bool setUniform<glm::mat2x4, 1>(int location, size_t count, const glm::mat2x4 *value);
+    bool setUniform<glm::mat2x4>(int location, size_t count, const glm::mat2x4 *value);
 
     template<>
-    bool setUniform<glm::mat3, 1>(int location, size_t count, const glm::mat3 *value);
+    bool setUniform<glm::mat3>(int location, size_t count, const glm::mat3 *value);
 
     template<>
-    bool setUniform<glm::mat3x2, 1>(int location, size_t count, const glm::mat3x2 *value);
+    bool setUniform<glm::mat3x2>(int location, size_t count, const glm::mat3x2 *value);
 
     template<>
-    bool setUniform<glm::mat3x4, 1>(int location, size_t count, const glm::mat3x4 *value);
+    bool setUniform<glm::vec2>(int location, const glm::vec2 &value);
 
     template<>
-    bool setUniform<glm::mat4, 1>(int location, size_t count, const glm::mat4 *value);
+    bool setUniform<glm::vec3>(int location, const glm::vec3 &value);
 
     template<>
-    bool setUniform<glm::mat4x2, 1>(int location, size_t count, const glm::mat4x2 *value);
+    bool setUniform<glm::vec4>(int location, const glm::vec4 &value);
 
     template<>
-    bool setUniform<glm::mat4x3, 1>(int location, size_t count, const glm::mat4x3 *value);
+    bool setUniform<glm::mat2>(int location, const glm::mat2 &value);
+
+    template<>
+    bool setUniform<glm::mat2x3>(int location, const glm::mat2x3 &value);
+
+    template<>
+    bool setUniform<glm::mat2x4>(int location, const glm::mat2x4 &value);
+
+    template<>
+    bool setUniform<glm::mat3>(int location, const glm::mat3 &value);
+
+    template<>
+    bool setUniform<glm::mat3x2>(int location, const glm::mat3x2 &value);
+
+    template<>
+    bool setUniform<glm::mat3x4>(int location, const glm::mat3x4 &value);
+
+    template<>
+    bool setUniform<glm::mat4>(int location, const glm::mat4 &value);
+
+    template<>
+    bool setUniform<glm::mat4x2>(int location, const glm::mat4x2 &value);
+
+    template<>
+    bool setUniform<glm::mat4x3>(int location, const glm::mat4x3 &value);
 
     template<>
     bool setAttrib<float, 1, false>(int location, size_t stride, const float *value);
