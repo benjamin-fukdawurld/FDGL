@@ -70,7 +70,7 @@ void FDGL::OpenGLTextureWrapper::unbind(FDGL::TextureTarget target)
     glBindBuffer(static_cast<GLenum>(target), 0);
 }
 
-void FDGL::OpenGLTextureWrapper::activeTexture(uint8_t texUnit)
+void FDGL::OpenGLTextureWrapper::activateTexture(uint8_t texUnit)
 {
     if(texUnit <= 15)
         glActiveTexture(GL_TEXTURE0 + texUnit);

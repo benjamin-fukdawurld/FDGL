@@ -37,7 +37,7 @@ namespace FDGL
             void bind(TextureTarget target);
             void unbind(TextureTarget target);
 
-            void activeTexture(uint8_t texUnit = 0);
+            void activateTexture(uint8_t texUnit = 0);
 
             void setWrapModeS(TextureWrapMode mode);
             void setWrapModeT(TextureWrapMode mode);
