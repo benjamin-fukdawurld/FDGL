@@ -2,6 +2,7 @@
 #define OPENGLUTILS_H
 
 #include <vector>
+
 #include <glad/glad.h>
 
 #include <FDGL/OpenGLUtilsForward.h>
@@ -157,6 +158,23 @@ namespace FDGL
         LinearMipmapLinear = GL_LINEAR_MIPMAP_LINEAR
     };
 
+    enum class DrawMode : GLenum
+    {
+        Invalid = GL_INVALID_ENUM,
+        Points = GL_POINTS,
+        LineStrip = GL_LINE_STRIP,
+        LineLoop = GL_LINE_LOOP,
+        Lines = GL_LINES,
+        LineStripAdjacency = GL_LINE_STRIP_ADJACENCY,
+        LineAdjacency = GL_LINES_ADJACENCY,
+        TriangleStrip = GL_TRIANGLE_STRIP,
+        TriangleFan = GL_TRIANGLE_FAN,
+        Triangles = GL_TRIANGLES,
+        TriangleStripAdjacency = GL_TRIANGLE_STRIP_ADJACENCY,
+        TriangleAdjacency = GL_TRIANGLES_ADJACENCY,
+        Patches = GL_PATCHES
+    };
+
     std::vector<GLenum> getLastOpenGLErrors();
 
     template<typename ...Args>
@@ -166,7 +184,7 @@ namespace FDGL
         if(location < 0)
             return false;
 
-        return setUniform(shader, location, value...);
+        return setUniform(location, value...);
     }
 
     template<typename T, size_t size>
@@ -211,6 +229,64 @@ namespace FDGL
     inline void enableAttrib(uint location)
     {
         glEnableVertexAttribArray(location);
+    }
+
+    inline void drawArrays(DrawMode mode, size_t first, size_t count)
+    {
+        glDrawArrays(static_cast<GLenum>(mode),
+                     static_cast<int>(first),
+                     static_cast<GLsizei>(count));
+    }
+
+    inline void drawArrays(DrawMode mode, size_t first, size_t count, size_t instanceCount)
+    {
+        glDrawArraysInstanced(static_cast<GLenum>(mode),
+                              static_cast<int>(first),
+                              static_cast<GLsizei>(count),
+                              static_cast<GLsizei>(instanceCount));
+    }
+
+    namespace internal
+    {
+        template<size_t IndexSize>
+        GLenum getGLIndexType()
+        {
+            switch(IndexSize)
+            {
+                case 1:
+                return GL_UNSIGNED_BYTE;
+
+                case 2:
+                return GL_UNSIGNED_SHORT;
+
+                case 4:
+                return GL_UNSIGNED_INT;
+
+                default:
+                return GL_INVALID_ENUM;
+            }
+        }
+    }
+
+    template<typename IndexType, size_t IndexSize = sizeof(IndexType)>
+    void drawElements(DrawMode mode, size_t count, const IndexType *indices)
+    {
+        glDrawElements(static_cast<GLenum>(mode),
+                       static_cast<GLsizei>(count),
+                       internal::getGLIndexType<IndexSize>(),
+                       reinterpret_cast<const void *>(indices));
+    }
+
+    template<typename IndexType, size_t IndexSize = sizeof(IndexType)>
+    void drawElements(DrawMode mode, size_t count, const IndexType *indices,
+                      size_t beginIndex, size_t endIndex)
+    {
+        glDrawRangeElements(static_cast<GLenum>(mode),
+                            static_cast<GLuint>(beginIndex),
+                            static_cast<GLuint>(endIndex),
+                            static_cast<GLsizei>(count),
+                            internal::getGLIndexType<IndexSize>(),
+                            reinterpret_cast<const void *>(indices));
     }
 }
 
