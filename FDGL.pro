@@ -14,13 +14,6 @@ DESTDIR = ../build/lib
 MAKEFILE = ../build/makefiles/$${TARGET}
 OBJECTS_DIR = ../build/.obj/$${TARGET}
 
-DEPENDPATH += \
-    include \
-    ../FDCore/include \
-    ../FD3D/include \
-    ../thirdparty/glad/include \
-    ../thirdparty/glm \
-
 INCLUDEPATH += \
     include \
     ../FDCore/include \

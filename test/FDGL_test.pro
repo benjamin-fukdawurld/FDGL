@@ -11,17 +11,7 @@ OBJECTS_DIR = ../../build/.obj/$${TARGET}
 
 LIBS += -L../../build/lib -lglad -lFDGL -lFD3D -lFDCore
 LIBS += -lglfw -lGL -lpthread -ldl -lX11 -lXrandr -lstdc++
-LIBS += -L../../thirdparty/assimp/lib -lassimp
-
-
-DEPENDPATH += \
-    ../include \
-    ../../FDCore/include \
-    ../../FD3D/include \
-    ../../thirdparty/glad/include \
-    ../../thirdparty/stb/include \
-    ../../thirdparty/glm \
-    ../../thirdparty/assimp/include \
+LIBS += -L../../thirdparty/assimp/bin -lassimp
 
 
 INCLUDEPATH += \
@@ -29,7 +19,7 @@ INCLUDEPATH += \
     ../../FDCore/include \
     ../../FD3D/include \
     ../../thirdparty/glad/include \
-    ../../thirdparty/stb/include \
+    ../../thirdparty/ \
     ../../thirdparty/glm \
     ../../thirdparty/assimp/include \
 
