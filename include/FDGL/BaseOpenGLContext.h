@@ -2,6 +2,7 @@
 #define BASEOPENGLCONTEXT_H
 
 #include <cstdint>
+#include <functional>
 
 namespace FDGL
 {
@@ -15,6 +16,10 @@ namespace FDGL
         public:
             BaseOpenGLContext();
             virtual ~BaseOpenGLContext();
+
+            void enableDebugOutut();
+            void isDebugOutputEnabled() const;
+            void disableDebugOutut();
 
             void enableDepth();
             bool isDepthEnabled() const;

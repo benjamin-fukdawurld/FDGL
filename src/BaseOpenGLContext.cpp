@@ -8,6 +8,21 @@ FDGL::BaseOpenGLContext::BaseOpenGLContext() {}
 
 FDGL::BaseOpenGLContext::~BaseOpenGLContext() {}
 
+void FDGL::BaseOpenGLContext::enableDebugOutut()
+{
+    enable(GL_DEBUG_OUTPUT);
+}
+
+void FDGL::BaseOpenGLContext::isDebugOutputEnabled() const
+{
+    isEnabled(GL_DEBUG_OUTPUT);
+}
+
+void FDGL::BaseOpenGLContext::disableDebugOutut()
+{
+    disable(GL_DEBUG_OUTPUT);
+}
+
 void FDGL::BaseOpenGLContext::enableDepth()
 {
     enable(GL_DEPTH);
