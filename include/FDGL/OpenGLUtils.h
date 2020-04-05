@@ -9,6 +9,46 @@
 
 namespace FDGL
 {
+    enum class ErrorType : uint32_t
+    {
+        Invalid = GL_INVALID_INDEX,
+        Error = GL_DEBUG_TYPE_ERROR,
+        DeprecatedBehavior = GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR,
+        UndefinedBehavior = GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR,
+        Portability = GL_DEBUG_TYPE_PORTABILITY,
+        Performance = GL_DEBUG_TYPE_PERFORMANCE,
+        Other = GL_DEBUG_TYPE_OTHER,
+        Marker = GL_DEBUG_TYPE_MARKER,
+        PushGroup = GL_DEBUG_TYPE_PUSH_GROUP,
+        PopGroup = GL_DEBUG_TYPE_POP_GROUP
+    };
+
+    std::string errorTypeToString(ErrorType type);
+
+    enum class ErrorSoure : uint32_t
+    {
+        Invalid = GL_INVALID_INDEX,
+        Api = GL_DEBUG_SOURCE_API,
+        WindowSystem = GL_DEBUG_SOURCE_WINDOW_SYSTEM,
+        ShaderCompiler = GL_DEBUG_SOURCE_SHADER_COMPILER,
+        ThirdParty = GL_DEBUG_SOURCE_THIRD_PARTY,
+        Application = GL_DEBUG_SOURCE_APPLICATION,
+        Other = GL_DEBUG_SOURCE_OTHER
+    };
+
+    std::string errorSourceToString(ErrorSoure src);
+
+    enum class ErrorSeverity : uint32_t
+    {
+        Invalid = GL_INVALID_INDEX,
+        High = GL_DEBUG_SEVERITY_HIGH,
+        Medium = GL_DEBUG_SEVERITY_MEDIUM,
+        Low = GL_DEBUG_SEVERITY_LOW,
+        Notification = GL_DEBUG_SEVERITY_NOTIFICATION
+    };
+
+    std::string errorSeverityToString(ErrorSeverity level);
+
     enum class BufferTarget : uint32_t
     {
         Invalid = GL_INVALID_ENUM,
@@ -42,7 +82,7 @@ namespace FDGL
         DynamicCopy = GL_DYNAMIC_COPY
     };
 
-    enum BufferMappingAccessFlag : uint32_t
+    enum class BufferMappingAccess : uint32_t
     {
         Invalid = GL_INVALID_ENUM,
         Write = GL_MAP_WRITE_BIT,

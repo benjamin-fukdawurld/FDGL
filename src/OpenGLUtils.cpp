@@ -731,3 +731,96 @@ bool FDGL::setAttrib<glm::ivec4, 4, false>(int location, size_t stride, const gl
                            GL_INT, static_cast<GLsizei>(stride), glm::value_ptr(*value));
     return true;
 }
+
+std::string FDGL::errorTypeToString(FDGL::ErrorType type)
+{
+    switch (type)
+    {
+        case ErrorType::Error:
+        return "Error";
+
+        case ErrorType::DeprecatedBehavior:
+        return "Deprecated Behavior";
+
+        case ErrorType::UndefinedBehavior:
+        return "Undefined Behavior";
+
+        case ErrorType::Portability:
+        return "Portability";
+
+        case ErrorType::Performance:
+        return "Performance";
+
+        case ErrorType::Other:
+        return "Other";
+
+        case ErrorType::Marker:
+        return "Marker";
+
+        case ErrorType::PushGroup:
+        return "Push Group";
+
+        case ErrorType::PopGroup:
+        return "Pop Group";
+
+        case ErrorType::Invalid:
+        default:
+        return std::string("Invalid Type (")
+                + std::to_string(static_cast<int>(type))
+                + ")";
+    }
+}
+
+std::string FDGL::errorSourceToString(FDGL::ErrorSoure src)
+{
+    switch (src)
+    {
+        case ErrorSoure::Api:
+        return "API";
+
+        case ErrorSoure::WindowSystem:
+        return "Window System";
+
+        case ErrorSoure::ShaderCompiler:
+        return "Shader Compiler";
+
+        case ErrorSoure::ThirdParty:
+        return "Third Party";
+
+        case ErrorSoure::Application:
+        return "Application";
+
+        case ErrorSoure::Other:
+        return "Other";
+
+        case ErrorSoure::Invalid:
+        default:
+        return std::string("Invalid Source (")
+                + std::to_string(static_cast<int>(src))
+                + ")";
+    }
+}
+
+std::string FDGL::errorSeverityToString(FDGL::ErrorSeverity level)
+{
+    switch (level)
+    {
+        case ErrorSeverity::High:
+        return "High";
+
+        case ErrorSeverity::Medium:
+        return "Medium";
+
+        case ErrorSeverity::Low:
+        return "Low";
+
+        case ErrorSeverity::Notification:
+        return "Notification";
+
+        case ErrorSeverity::Invalid:
+        default:
+        return std::string("Invalid Severity (")
+                + std::to_string(static_cast<int>(level))
+                + ")";
+    }
+}
