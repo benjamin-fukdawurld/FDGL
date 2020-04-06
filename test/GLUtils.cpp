@@ -123,7 +123,7 @@ FDGL::OpenGLTextureWrapper loadTexture(const aiTexture *input)
 
     tex.setMinFilter(FDGL::TextureFilter::LinearMipmapLinear);
     tex.setMagFilter(FDGL::TextureFilter::Linear);
-    tex.allocate(FDGL::TextureTarget::Texture2D, 0, GL_RGBA, size,  GL_RGBA,
+    tex.allocate(FDGL::TextureTarget::Texture2D, 0, GL_RGBA, size,  format,
                  GL_UNSIGNED_BYTE, reinterpret_cast<void*>(input->pcData));
     tex.generateMipMap();
 

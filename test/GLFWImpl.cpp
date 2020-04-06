@@ -41,8 +41,11 @@ Window::Window() : BaseOpenGLWindow(), m_window(nullptr) {}
 
 Window::~Window()
 {
-    if(m_window)
-        destroy();
+    if(!m_window)
+        return;
+
+    destroy();
+    quit();
 }
 
 bool Window::create(int width, int height, const std::string &title)
@@ -57,8 +60,9 @@ bool Window::create(int width, int height, const std::string &title)
     }
     glfwMakeContextCurrent(m_window);
 
-    glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow*, int width, int height)
+    glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow *w, int width, int height)
     {
+        reinterpret_cast<Window*>(w)->onResize(width, height);
         glViewport(0, 0, width, height);
     });
 
