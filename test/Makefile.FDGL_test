@@ -712,9 +712,7 @@ compiler_clean:
 		../../thirdparty/glm/glm/ext/vector_int4.hpp \
 		../../thirdparty/glm/glm/ext/vector_int4_precision.hpp \
 		../../thirdparty/glm/glm/ext/vector_uint4.hpp \
-		../../thirdparty/glm/glm/ext/vector_uint4_precision.hpp \
-		../../thirdparty/glad/include/glad/glad.h \
-		../../thirdparty/glad/include/KHR/khrplatform.h
+		../../thirdparty/glm/glm/ext/vector_uint4_precision.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ../../build/.obj/FDGL_test/GLFWImpl.o GLFWImpl.cpp
 
 ../../build/.obj/FDGL_test/GLUtils.o: GLUtils.cpp GLUtils.h \
@@ -999,20 +997,6 @@ compiler_clean:
 		../../thirdparty/glm/glm/ext/vector_uint3_precision.hpp \
 		../../FD3D/include/FD3D/Material/Texture.h \
 		../../FD3D/include/FD3D/Light/Light.h \
-		../../thirdparty/glm/glm/vec4.hpp \
-		../../thirdparty/glm/glm/ext/vector_bool4.hpp \
-		../../thirdparty/glm/glm/detail/type_vec4.hpp \
-		../../thirdparty/glm/glm/detail/type_vec4.inl \
-		../../thirdparty/glm/glm/detail/type_vec4_simd.inl \
-		../../thirdparty/glm/glm/ext/vector_bool4_precision.hpp \
-		../../thirdparty/glm/glm/ext/vector_float4.hpp \
-		../../thirdparty/glm/glm/ext/vector_float4_precision.hpp \
-		../../thirdparty/glm/glm/ext/vector_double4.hpp \
-		../../thirdparty/glm/glm/ext/vector_double4_precision.hpp \
-		../../thirdparty/glm/glm/ext/vector_int4.hpp \
-		../../thirdparty/glm/glm/ext/vector_int4_precision.hpp \
-		../../thirdparty/glm/glm/ext/vector_uint4.hpp \
-		../../thirdparty/glm/glm/ext/vector_uint4_precision.hpp \
 		../../thirdparty/glm/glm/gtc/quaternion.hpp \
 		../../thirdparty/glm/glm/gtc/constants.hpp \
 		../../thirdparty/glm/glm/ext/scalar_constants.hpp \
@@ -1022,6 +1006,9 @@ compiler_clean:
 		../../thirdparty/glm/glm/mat4x4.hpp \
 		../../thirdparty/glm/glm/ext/matrix_double4x4.hpp \
 		../../thirdparty/glm/glm/detail/type_mat4x4.hpp \
+		../../thirdparty/glm/glm/detail/type_vec4.hpp \
+		../../thirdparty/glm/glm/detail/type_vec4.inl \
+		../../thirdparty/glm/glm/detail/type_vec4_simd.inl \
 		../../thirdparty/glm/glm/detail/type_mat4x4.inl \
 		../../thirdparty/glm/glm/matrix.hpp \
 		../../thirdparty/glm/glm/vec2.hpp \
@@ -1037,6 +1024,17 @@ compiler_clean:
 		../../thirdparty/glm/glm/ext/vector_int2_precision.hpp \
 		../../thirdparty/glm/glm/ext/vector_uint2.hpp \
 		../../thirdparty/glm/glm/ext/vector_uint2_precision.hpp \
+		../../thirdparty/glm/glm/vec4.hpp \
+		../../thirdparty/glm/glm/ext/vector_bool4.hpp \
+		../../thirdparty/glm/glm/ext/vector_bool4_precision.hpp \
+		../../thirdparty/glm/glm/ext/vector_float4.hpp \
+		../../thirdparty/glm/glm/ext/vector_float4_precision.hpp \
+		../../thirdparty/glm/glm/ext/vector_double4.hpp \
+		../../thirdparty/glm/glm/ext/vector_double4_precision.hpp \
+		../../thirdparty/glm/glm/ext/vector_int4.hpp \
+		../../thirdparty/glm/glm/ext/vector_int4_precision.hpp \
+		../../thirdparty/glm/glm/ext/vector_uint4.hpp \
+		../../thirdparty/glm/glm/ext/vector_uint4_precision.hpp \
 		../../thirdparty/glm/glm/mat2x2.hpp \
 		../../thirdparty/glm/glm/ext/matrix_double2x2.hpp \
 		../../thirdparty/glm/glm/detail/type_mat2x2.hpp \
@@ -1155,6 +1153,10 @@ compiler_clean:
 		../../thirdparty/glm/glm/gtc/epsilon.hpp \
 		../../thirdparty/glm/glm/gtc/epsilon.inl \
 		../../thirdparty/glm/glm/gtc/quaternion_simd.inl \
+		../../FD3D/include/FD3D/Light/LightColor.h \
+		../../FD3D/include/FD3D/Light/LightAttenuation.h \
+		../../FD3D/include/FD3D/Light/LightCone.h \
+		../../FD3D/include/FD3D/Light/LightType.h \
 		../../FD3D/include/FD3D/Mesh/Mesh.h \
 		../../FD3D/include/FD3D/Mesh/AbstractMesh.h \
 		../../FD3D/include/FD3D/Utils/VertexProxy.h \
@@ -1164,6 +1166,7 @@ compiler_clean:
 		../../FD3D/include/FD3D/Camera/Camera.h \
 		../../FD3D/include/FD3D/Utils/Transform.h \
 		../../FD3D/include/FD3D/Camera/Projection.h \
+		../../FD3D/include/FD3D/Camera/ProjectionType.h \
 		../include/FDGL/OpenGLBuffer.h \
 		../include/FDGL/OpenGLResource.h \
 		../include/FDGL/OpenGLUtils.h \

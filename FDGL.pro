@@ -6,13 +6,16 @@
 TARGET = FDGL
 TEMPLATE = lib
 CONFIG += console c++17
-CONFIG += staticlib
 CONFIG -= app_bundle
 CONFIG -= qt
 
 DESTDIR = ../build/lib
 MAKEFILE = ../build/makefiles/$${TARGET}
 OBJECTS_DIR = ../build/.obj/$${TARGET}
+
+LIBS += -L../build/lib -L../thirdparty/assimp/bin
+LIBS += -lglad -lFDGL -lFD3D -lFDCore -lassimp
+LIBS += -lglfw -lGL -lpthread -ldl -lX11 -lXrandr -lstdc++
 
 INCLUDEPATH += \
     include \
@@ -32,7 +35,8 @@ SOURCES += \
     src/OpenGLVertexArray.cpp \
     src/OpenGLTexture.cpp \
     src/OpenGLFrameBuffer.cpp \
-    src/OpenGLRenderBuffer.cpp
+    src/OpenGLRenderBuffer.cpp \
+    src/BufferedMesh.cpp
 
 HEADERS += \
     include/FDGL/BaseOpenGLContext.h \
