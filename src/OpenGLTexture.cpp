@@ -45,7 +45,7 @@ FDGL::OpenGLTextureWrapper &FDGL::OpenGLTextureWrapper::operator=(FDGL::OpenGLTe
 
 bool FDGL::OpenGLTextureWrapper::create()
 {
-    release();
+    reset(0);
     glGenTextures(1, &m_id);
 
     return m_id != 0;
@@ -67,7 +67,7 @@ void FDGL::OpenGLTextureWrapper::bind(FDGL::TextureTarget target)
 
 void FDGL::OpenGLTextureWrapper::unbind(FDGL::TextureTarget target)
 {
-    glBindBuffer(static_cast<GLenum>(target), 0);
+    glBindTexture(static_cast<GLenum>(target), 0);
 }
 
 void FDGL::OpenGLTextureWrapper::activateTexture(uint8_t texUnit)
@@ -80,32 +80,32 @@ void FDGL::OpenGLTextureWrapper::activateTexture(uint8_t texUnit)
 
 void FDGL::OpenGLTextureWrapper::setWrapModeS(TextureWrapMode mode)
 {
-    glTexParameteri(m_id, GL_TEXTURE_WRAP_S, static_cast<int>(mode));
+    glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, static_cast<int>(mode));
 }
 
 void FDGL::OpenGLTextureWrapper::setWrapModeT(TextureWrapMode mode)
 {
-    glTexParameteri(m_id, GL_TEXTURE_WRAP_T, static_cast<int>(mode));
+    glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, static_cast<int>(mode));
 }
 
 void FDGL::OpenGLTextureWrapper::setWrapModeR(TextureWrapMode mode)
 {
-    glTexParameteri(m_id, GL_TEXTURE_WRAP_R, static_cast<int>(mode));
+    glTextureParameteri(m_id, GL_TEXTURE_WRAP_R, static_cast<int>(mode));
 }
 
 void FDGL::OpenGLTextureWrapper::setBorderColor(const glm::vec4 &color)
 {
-    glTexParameterfv(m_id, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(color));
+    glTextureParameterfv(m_id, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(color));
 }
 
 void FDGL::OpenGLTextureWrapper::setMinFilter(FDGL::TextureFilter filter)
 {
-    glTexParameteri(m_id, GL_TEXTURE_MIN_FILTER, static_cast<int>(filter));
+    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, static_cast<int>(filter));
 }
 
 void FDGL::OpenGLTextureWrapper::setMagFilter(FDGL::TextureFilter filter)
 {
-    glTexParameteri(m_id, GL_TEXTURE_MAG_FILTER, static_cast<int>(filter));
+    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, static_cast<int>(filter));
 }
 
 void FDGL::OpenGLTextureWrapper::generateMipMap()
