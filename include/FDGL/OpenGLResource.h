@@ -26,7 +26,8 @@ namespace FDGL
             virtual ~OpenGLResourceWrapper();
 
             virtual void destroy();
-            virtual void release();
+            virtual void reset(uint32_t id);
+            virtual uint32_t release();
 
             uint32_t getId() const { return m_id; }
             virtual void setId(uint32_t id);
@@ -78,9 +79,10 @@ namespace FDGL
                 return *this;
             }
 
-            void release() override
+            void reset(uint32_t id) override
             {
                 ResourceType::destroy();
+                ResourceType::reset(id);
             }
     };
 

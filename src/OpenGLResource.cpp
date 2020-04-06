@@ -46,15 +46,22 @@ void FDGL::OpenGLResourceWrapper::destroy()
         glDeleteRenderbuffers(1, &m_id);
 }
 
-void FDGL::OpenGLResourceWrapper::release()
+void FDGL::OpenGLResourceWrapper::reset(uint32_t id)
 {
+    m_id = id;
+}
+
+uint32_t FDGL::OpenGLResourceWrapper::release()
+{
+    uint32_t id = m_id;
     m_id = 0;
+
+    return id;
 }
 
 void FDGL::OpenGLResourceWrapper::setId(uint32_t id)
 {
-    release();
-    m_id = id;
+    reset(id);
 }
 
 void FDGL::OpenGLResourceWrapper::swap(FDGL::OpenGLResourceWrapper &other)
