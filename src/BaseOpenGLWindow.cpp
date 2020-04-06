@@ -3,14 +3,54 @@
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
-FDGL::BaseOpenGLWindow::BaseOpenGLWindow()
+FDGL::BaseOpenGLWindow::BaseOpenGLWindow(RenderCallback renderStrategy) :
+    m_renderStrategy(renderStrategy),
+    m_clearMask(GL_COLOR_BUFFER_BIT)
 {
 
 }
 
-FDGL::BaseOpenGLWindow::~BaseOpenGLWindow()
+FDGL::BaseOpenGLWindow::InitializeCallback FDGL::BaseOpenGLWindow::getInitializeStrategy() const
 {
+    return m_initStrategy;
+}
 
+FDGL::BaseOpenGLWindow::QuitCallback FDGL::BaseOpenGLWindow::getQuitStrategy() const
+{
+    return m_quitStrategy;
+}
+
+FDGL::BaseOpenGLWindow::RenderCallback FDGL::BaseOpenGLWindow::getRenderStrategy() const
+{
+    return m_renderStrategy;
+}
+
+FDGL::BaseOpenGLWindow::ResizeCallback FDGL::BaseOpenGLWindow::getResizeStrategy() const
+{
+    return m_resizeStrategy;
+}
+
+void FDGL::BaseOpenGLWindow::init()
+{
+    if(m_initStrategy)
+        m_initStrategy(*this);
+}
+
+void FDGL::BaseOpenGLWindow::quit()
+{
+    if(m_quitStrategy)
+        m_quitStrategy(*this);
+}
+
+void FDGL::BaseOpenGLWindow::onResize(int width, int height)
+{
+    if(m_resizeStrategy)
+        m_resizeStrategy(*this, width, height);
+}
+
+void FDGL::BaseOpenGLWindow::render()
+{
+    m_renderStrategy(*this);
 }
 
 void FDGL::BaseOpenGLWindow::clear() const

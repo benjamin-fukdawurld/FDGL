@@ -4,21 +4,79 @@
 #include <string>
 #include <cstdint>
 #include <glm/vec4.hpp>
-#include <glad/glad.h>
+#include <functional>
+
 
 namespace FDGL
 {
     class BaseOpenGLWindow
     {
+        public:
+            typedef std::function<void(BaseOpenGLWindow&)> InitializeCallback;
+            typedef std::function<void(BaseOpenGLWindow&)> QuitCallback;
+            typedef std::function<void(BaseOpenGLWindow&)> RenderCallback;
+            typedef std::function<void(BaseOpenGLWindow&, int, int)> ResizeCallback;
+
         protected:
-            GLbitfield m_clearMask;
+            InitializeCallback m_initStrategy;
+            QuitCallback m_quitStrategy;
+            RenderCallback m_renderStrategy;
+            ResizeCallback m_resizeStrategy;
+            uint32_t m_clearMask;
 
         public:
-            BaseOpenGLWindow();
-            virtual ~BaseOpenGLWindow();
+            BaseOpenGLWindow(RenderCallback renderStrategy = {});
+            virtual ~BaseOpenGLWindow() = default;
 
             uint32_t getClearMask() const { return m_clearMask; }
             void setClearMask(uint32_t mask) { m_clearMask = mask; }
+
+            InitializeCallback getInitializeStrategy() const;
+
+            template<typename StrategyType, typename ...Args>
+            void setInitializeStrategy(StrategyType strategy, Args ...args)
+            {
+                m_initStrategy = std::bind(strategy, args..., std::placeholders::_1);
+            }
+
+            QuitCallback getQuitStrategy() const;
+
+            template<typename StrategyType, typename ...Args>
+            void setQuitStrategy(StrategyType strategy, Args ...args)
+            {
+                m_quitStrategy = std::bind(strategy, args..., std::placeholders::_1);
+            }
+
+            RenderCallback getRenderStrategy() const;
+
+            template<typename StrategyType, typename ...Args>
+            void setRenderStrategy(StrategyType strategy, Args ...args)
+            {
+                m_renderStrategy = std::bind(strategy, args..., std::placeholders::_1);
+            }
+
+            ResizeCallback getResizeStrategy() const;
+
+            template<typename StrategyType, typename ...Args>
+            void setResizeStrategy(StrategyType strategy, Args ...args)
+            {
+                m_resizeStrategy = std::bind(strategy, args..., std::placeholders::_1,
+                                             std::placeholders::_2, std::placeholders::_3);
+            }
+
+            template<typename T>
+            void setRenderer(T &renderer)
+            {
+                setInitializeStrategy(&T::onInit, &renderer);
+                setQuitStrategy(&T::onQuit, &renderer);
+                setRenderStrategy(&T::onRender, &renderer);
+                setResizeStrategy(&T::onResize, &renderer);
+            }
+
+            void init();
+            void quit();
+            void onResize(int width, int height);
+            void render();
 
             virtual void clear() const;
             virtual glm::vec4 getClearColor() const;
