@@ -59,8 +59,7 @@ FDGL::OpenGLShaderProgramWrapper &FDGL::OpenGLShaderProgramWrapper::operator=(FD
 
 bool FDGL::OpenGLShaderProgramWrapper::create()
 {
-    release();
-    m_id = glCreateProgram();
+    reset(glCreateProgram());
     return m_id != 0;
 }
 

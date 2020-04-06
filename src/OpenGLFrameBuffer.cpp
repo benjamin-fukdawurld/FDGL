@@ -43,7 +43,7 @@ FDGL::OpenGLFrameBufferWrapper &FDGL::OpenGLFrameBufferWrapper::operator=(FDGL::
 
 bool FDGL::OpenGLFrameBufferWrapper::create()
 {
-    release();
+    reset(0);
     glGenFramebuffers(1, &m_id);
 
     return m_id != 0;

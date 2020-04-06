@@ -45,7 +45,7 @@ FDGL::OpenGLShaderWrapper &FDGL::OpenGLShaderWrapper::operator=(FDGL::OpenGLShad
 
 bool FDGL::OpenGLShaderWrapper::create(ShaderType type)
 {
-    release();
+    reset(0);
     m_id = glCreateShader(static_cast<GLenum>(type));
     return m_id != 0;
 }
