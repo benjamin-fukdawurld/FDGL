@@ -1,5 +1,5 @@
-#ifndef BUFFERWRAPPER_H
-#define BUFFERWRAPPER_H
+#ifndef OPENGLBUFFER_H
+#define OPENGLBUFFER_H
 
 #include <FDGL/OpenGLResource.h>
 
@@ -60,6 +60,13 @@ namespace FDGL
             template<typename T>
             bool setData(size_t offset, size_t size, const T *data)
             {
+                glNamedBufferSubData(m_id, static_cast<GLintptr>(offset), static_cast<GLsizeiptr>(size), data);
+                return getLastOpenGLErrors().empty();
+            }
+
+            template<typename T>
+            bool getData(size_t offset, size_t size, T *data)
+            {
                 glGetNamedBufferSubData(m_id, static_cast<GLintptr>(offset), static_cast<GLsizeiptr>(size), data);
                 return getLastOpenGLErrors().empty();
             }
@@ -98,71 +105,106 @@ namespace FDGL
             BufferTarget getTarget() const;
     };
 
-    template<BufferMappingAccessFlag access = BufferMappingAccessFlag::ReadWrite>
+    template<BufferMappingAccess access = BufferMappingAccess::ReadWrite>
     class OpenGLBufferMappingGuard
     {
         protected:
-            OpenGLBufferWrapper &m_wrapper;
             void *m_map;
             size_t m_offset;
             size_t m_size;
+            uint32_t m_id;
 
         public:
-            OpenGLBufferMappingGuard(OpenGLBufferWrapper &wrapper) :
-                m_wrapper(wrapper),
+            OpenGLBufferMappingGuard() :
                 m_map(nullptr),
                 m_offset(0),
-                m_size(wrapper.size())
-            {
-                m_map = glMapNamedBuffer(*m_wrapper, access);
-            }
+                m_size(0),
+                m_id(0)
+            {}
 
-            OpenGLBufferMappingGuard(OpenGLBufferWrapper &wrapper, size_t offset, size_t size) :
-                m_wrapper(wrapper),
+            OpenGLBufferMappingGuard(uint32_t id, size_t size, size_t offset = 0) :
                 m_map(nullptr),
                 m_offset(offset),
-                m_size(size)
+                m_size(size),
+                m_id(id)
             {
-                m_map = glMapNamedBufferRange(*m_wrapper, static_cast<GLintptr>(m_offset),
-                                              static_cast<GLsizeiptr>(m_size),  access);
+                m_map = glMapNamedBufferRange(m_id, static_cast<GLintptr>(m_offset),
+                                              static_cast<GLsizeiptr>(m_size),  static_cast<GLenum>(access));
+            }
+
+            OpenGLBufferMappingGuard(const OpenGLBufferMappingGuard<access> &guard) = delete;
+
+            OpenGLBufferMappingGuard(OpenGLBufferMappingGuard<access> &&guard) :
+                OpenGLBufferMappingGuard()
+            {
+                *this = std::move(guard);
+            }
+
+            OpenGLBufferMappingGuard &operator=(const OpenGLBufferMappingGuard<access> &guard) = delete;
+            OpenGLBufferMappingGuard &operator=(OpenGLBufferMappingGuard<access> &&guard)
+            {
+                uint32_t id = m_id;
+                m_id = guard.m_id;
+                m_map = guard.m_map;
+                m_offset = guard.m_offset;
+                m_size = guard.m_size;
+                guard.m_id = id;
             }
 
             ~OpenGLBufferMappingGuard()
             {
-                glUnmapNamedBuffer(*m_wrapper);
+                if(m_id)
+                    glUnmapNamedBuffer(m_id);
             }
+
+
 
             void flush()
             {
-                glFlushMappedNamedBufferRange(*m_wrapper, m_offset, m_size);
+                if(m_id)
+                    glFlushMappedNamedBufferRange(m_id, m_offset, m_size);
             }
 
-            OpenGLBufferWrapper &getWrapper()
+            uint32_t getId()
             {
-                return m_wrapper;
+                return m_id;
+            }
+
+            OpenGLBufferWrapper getWrapper()
+            {
+                return { m_id };
             }
 
             size_t size() const
             {
-                return m_wrapper.size();
+                if(m_id)
+                    return m_size;
+
+                return 0;
             }
 
             template<typename T>
             size_t count() const
             {
-                return m_wrapper.size() / sizeof(T);
+                return size() / sizeof(T);
             }
 
             template<typename T = void>
             T *get(size_t byte_offset)
             {
-                return reinterpret_cast<T*>(m_map + byte_offset);
+                if(m_id)
+                    return reinterpret_cast<T*>(m_map + byte_offset);
+
+                return nullptr;
             }
 
             template<typename T = void>
             const T *get(size_t byte_offset) const
             {
-                return reinterpret_cast<T*>(m_map + byte_offset);
+                if(m_id)
+                    return reinterpret_cast<T*>(m_map + byte_offset);
+
+                return nullptr;
             }
 
             template<typename T>
@@ -179,4 +221,4 @@ namespace FDGL
     };
 }
 
-#endif // BUFFERWRAPPER_H
+#endif // OPENGLBUFFER_H
