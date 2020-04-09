@@ -169,3 +169,43 @@ FDGL::OpenGLShaderProgramWrapper createShaderProgram()
 
     return program;
 }
+
+FDGL::OpenGLShaderProgramWrapper createLightShaderProgram()
+{
+    FDGL::OpenGLShaderProgramWrapper program;
+    FDGL::OpenGLShader v_shad;
+    v_shad.create(FDGL::ShaderType::Vertex);
+    v_shad.setSource(loadFile("../../FDGL/test/resources/light.vert"));
+    if(!v_shad.compile())
+    {
+        std::string msg = "Cannot compile vertex shader: ";
+        msg += v_shad.getCompileErrors();
+        cerr << msg << endl;
+        return FDGL::OpenGLShaderProgramWrapper();
+    }
+
+    FDGL::OpenGLShader f_shad;
+    f_shad.create(FDGL::ShaderType::Fragment);
+    f_shad.setSource(loadFile("../../FDGL/test/resources/light.frag"));
+    if(!f_shad.compile())
+    {
+        std::string msg = "Cannot compile fragment shader: ";
+        msg += f_shad.getCompileErrors();
+        cerr << msg << endl;
+        return FDGL::OpenGLShaderProgramWrapper();
+    }
+
+    // link shaders
+    program.create();
+    program.attach(v_shad);
+    program.attach(f_shad);
+    if(!program.link())
+    {
+        std::string msg = "Cannot link shader program: ";
+        msg += program.getLinkErrors();
+        cerr << msg << endl;
+        return FDGL::OpenGLShaderProgramWrapper();
+    }
+
+    return program;
+}

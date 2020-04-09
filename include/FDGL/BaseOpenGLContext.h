@@ -4,6 +4,10 @@
 #include <cstdint>
 #include <functional>
 
+#include <FDCore/AssociativeContainer.h>
+
+#include <FDGL/OpenGLResource.h>
+
 namespace FDGL
 {
     class BaseOpenGLWindow;
@@ -12,6 +16,9 @@ namespace FDGL
     {
         public:
             typedef void* (*GetProcAddressFunc) (const char*);
+
+        protected:
+            FDCore::AssociativeContainer<std::string, OpenGLResourceWrapper> m_glResources;
 
         public:
             BaseOpenGLContext();
@@ -48,6 +55,13 @@ namespace FDGL
 
             void disable(uint32_t capability);
             void disable(uint32_t capability, uint32_t index);
+
+            bool hasResource(const std::string &key) const;
+            OpenGLResourceWrapper getRessource(const std::string &key);
+            const OpenGLResourceWrapper getRessource(const std::string &key) const;
+            void addRessource(const std::string &key, const OpenGLResourceWrapper &resource);
+            void setRessource(const std::string &key, const OpenGLResourceWrapper &resource);
+            void removeResource(const std::string &key);
 
             virtual bool loadOpenGLFunctions(GetProcAddressFunc f) const;
 

@@ -26,13 +26,19 @@ INCLUDEPATH += \
 SOURCES += \
     GLFWImpl.cpp \
     GLUtils.cpp \
-    main.cpp
+    main.cpp \
+    Renderer.cpp
 
 HEADERS += \
     GLFWImpl.h \
-    GLUtils.h
+    GLUtils.h \
+    Renderer.h
 
 OTHER_FILES += \
     resources/vertex.vert \
     resources/frag.frag \
     resources/wall.jpg
+
+DISTFILES += \
+    resources/light.vert \
+    resources/light.frag

@@ -16,5 +16,7 @@ FDGL::OpenGLTextureWrapper loadTexture(const aiTexture *input);
 
 FDGL::OpenGLShaderProgramWrapper createShaderProgram();
 
+FDGL::OpenGLShaderProgramWrapper createLightShaderProgram();
+
 
 #endif // GLUTILS_H

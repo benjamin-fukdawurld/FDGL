@@ -6,7 +6,11 @@
 
 FDGL::BaseOpenGLContext::BaseOpenGLContext() {}
 
-FDGL::BaseOpenGLContext::~BaseOpenGLContext() {}
+FDGL::BaseOpenGLContext::~BaseOpenGLContext()
+{
+    for(auto &r: m_glResources)
+        r.value.destroy();
+}
 
 void FDGL::BaseOpenGLContext::enableDebugOutut()
 {
@@ -25,17 +29,17 @@ void FDGL::BaseOpenGLContext::disableDebugOutut()
 
 void FDGL::BaseOpenGLContext::enableDepth()
 {
-    enable(GL_DEPTH);
+    enable(GL_DEPTH_TEST);
 }
 
 bool FDGL::BaseOpenGLContext::isDepthEnabled() const
 {
-    return isEnabled(GL_DEPTH);
+    return isEnabled(GL_DEPTH_TEST);
 }
 
 void FDGL::BaseOpenGLContext::disableDepth()
 {
-    disable(GL_DEPTH);
+    disable(GL_DEPTH_TEST);
 }
 
 void FDGL::BaseOpenGLContext::enableDepthMask()
@@ -121,6 +125,48 @@ void FDGL::BaseOpenGLContext::disable(uint32_t capability)
 void FDGL::BaseOpenGLContext::disable(uint32_t capability, uint32_t index)
 {
     glDisablei(static_cast<GLenum>(capability), static_cast<GLuint>(index));
+}
+
+bool FDGL::BaseOpenGLContext::hasResource(const std::string &key) const
+{
+    return m_glResources.find(key) != m_glResources.end();
+}
+
+const FDGL::OpenGLResourceWrapper FDGL::BaseOpenGLContext::getRessource(const std::string &key) const
+{
+    auto it = m_glResources.find(key);
+    if(it == m_glResources.end())
+        return OpenGLResourceWrapper();
+
+    return it->value;
+}
+
+void FDGL::BaseOpenGLContext::addRessource(const std::string &key, const OpenGLResourceWrapper &resource)
+{
+    m_glResources.insert(key, resource);
+}
+
+void FDGL::BaseOpenGLContext::setRessource(const std::string &key, const FDGL::OpenGLResourceWrapper &resource)
+{
+    auto it = m_glResources.find(key);
+    if(it == m_glResources.end())
+        m_glResources.insert(key, resource);
+    else
+        it->value = resource;
+}
+
+void FDGL::BaseOpenGLContext::removeResource(const std::string &key)
+{
+    m_glResources.erase(key);
+}
+
+FDGL::OpenGLResourceWrapper FDGL::BaseOpenGLContext::getRessource(const std::string &key)
+{
+    auto it = m_glResources.find(key);
+    if(it == m_glResources.end())
+        return OpenGLResourceWrapper();
+
+    return it->value;
 }
 
 bool FDGL::BaseOpenGLContext::loadOpenGLFunctions(FDGL::BaseOpenGLContext::GetProcAddressFunc f) const
