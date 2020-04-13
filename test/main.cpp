@@ -14,6 +14,7 @@
 #include "GLUtils.h"
 
 #include "Renderer.h"
+#include "Engine.h"
 
 #include <thread>
 #include <chrono>
@@ -96,26 +97,18 @@ int draw_mesh(int, char* [])
     if(!ctx.init())
         return -1;
 
-    Window w;
-    if(!w.create(800, 600, "Test window"))
-        return -1;
-
-    ctx.setCurrentContext(w);
-    if (!ctx.loadOpenGLFunctions(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
-        return -1;
-
     Renderer renderer(ctx);
-    w.setRenderer(renderer);
-    w.init();
+    Window w;
+    Engine engine(ctx, w, renderer);
 
-    FDCore::TimeManager<> timeMgr;
-    timeMgr.start();
+    engine.init();
 
     // render loop
     // -----------
     while (w.isOpen())
     {
         w.processInput();
+        engine.update();
         w.render();
     }
 
@@ -330,17 +323,5 @@ int draw_triangle()
 
 int main(int argc, char *argv[])
 {
-    /*FD3D::Transform trans;
-    cout << trans.getMatrix() << endl;
-
-    trans.setRotation(glm::vec3(glm::radians(90.0f), 0.0f, 0.0f));
-    cout << glm::degrees(trans.getEulerAngles()) << endl;
-    cout << trans.getRotation() << endl;
-    cout << trans.getMatrix() << endl;
-    trans.rotate(glm::vec3(0.0f, glm::radians(90.0f), 0.0f));
-    cout << glm::degrees(trans.getEulerAngles()) << endl;
-    cout << trans.getRotation() << endl;
-    cout << trans.getMatrix() << endl;*/
-
     return draw_mesh(argc, argv);
 }

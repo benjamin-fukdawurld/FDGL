@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 
+#include <FDGL/OpenGLUtils.h>
+
 #include <iostream>
 
 FDGL::BaseOpenGLContext::BaseOpenGLContext() {}
@@ -80,6 +82,11 @@ bool FDGL::BaseOpenGLContext::isFaceCullingEnabled() const
 void FDGL::BaseOpenGLContext::disableFaceCulling()
 {
     disable(GL_CULL_FACE);
+}
+
+void FDGL::BaseOpenGLContext::cullFace(FDGL::CullFace face)
+{
+    glCullFace(static_cast<GLenum>(face));
 }
 
 void FDGL::BaseOpenGLContext::enableMultiSampling()

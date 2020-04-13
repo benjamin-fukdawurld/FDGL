@@ -7,6 +7,8 @@
 #include <FDGL/BaseOpenGLWindow.h>
 #include <FDGL/OpenGLShaderProgram.h>
 #include <FDGL/OpenGLTexture.h>
+#include <FDGL/BaseRenderer.h>
+
 #include <FDGL/OpenGLVertexArray.h>
 
 #include <FD3D/Camera/Camera.h>
@@ -18,7 +20,12 @@
 #include <unordered_map>
 #include <unordered_set>
 
-class Renderer
+namespace FDGL
+{
+    class BufferedMesh;
+}
+
+class Renderer final : public FDGL::BaseRenderer
 {
     private:
         enum class NodeState : int8_t
@@ -38,134 +45,115 @@ class Renderer
                 NodeState &m_state;
 
             public:
-                NodeTransitionGuard(Renderer &r, FD3D::SceneNode::id_type id, NodeState &state):
-                    m_renderer(r),
-                    m_id(id),
-                    m_state(state)
-                {}
+                NodeTransitionGuard(Renderer &r, FD3D::SceneNode::id_type id, NodeState &state);
+                ~NodeTransitionGuard();
 
-                ~NodeTransitionGuard()
-                {
-                    applyTransition();
-                }
-
-                Renderer &getRenderer()
-                {
-                    return m_renderer;
-                }
-
-                const Renderer &getRenderer() const
-                {
-                    return m_renderer;
-                }
-
-                FD3D::SceneNode::id_type getId()
-                {
-                    return m_id;
-                }
-
-                NodeState getState() const
-                {
-                    return m_state;
-                }
+                FD3D::SceneNode::id_type getId();
+                NodeState getState() const;
 
             private:
-                void applyTransition()
-                {
-                    switch (m_state)
-                    {
-                        case NodeState::New:
-                        {
-                            FD3D::ObjectNode *obj = m_renderer.getScene().getNode(m_id)->as<FD3D::ObjectNode>();
-                            if(obj != nullptr)
-                                m_renderer.pushTransform(obj->getEntity());
-
-                            m_state = NodeState::Explored;
-                        }
-                        break;
-
-                        case NodeState::Explored:
-                        m_state =  NodeState::Rendered;
-                        break;
-
-                        case NodeState::Rendered:
-                        {
-                            FD3D::ObjectNode *obj = m_renderer.getScene().getNode(m_id)->as<FD3D::ObjectNode>();
-                            if(obj != nullptr)
-                                m_renderer.popTransform();
-
-                            m_state = NodeState::Done;
-                        }
-                        break;
-
-                        default:
-                        break;
-                    }
-                }
+                void applyTransition();
         };
 
     protected:
-        FDGL::BaseOpenGLContext &m_ctx;
-        FDCore::TimeManager<> m_timeMgr;
-        FD3D::Scene m_scene;
         FD3D::TransformStack m_transformStack;
-        FDGL::OpenGLTexture m_tex;
         FD3D::Camera *m_activeCamera;
         FD3D::Light *m_light;
 
     public:
         Renderer(FDGL::BaseOpenGLContext &ctx);
+        ~Renderer() override = default;
 
-        ~Renderer() = default;
+        FD3D::TransformStack &getTransformStack()
+        {
+            return m_transformStack;
+        }
 
-        const FDGL::BaseOpenGLContext &getOpenGLContex() const;
+        const FD3D::TransformStack &getTransformStack() const
+        {
+            return m_transformStack;
+        }
 
-        FDGL::BaseOpenGLContext &getOpenGLContex();
+        void pushTransform(const FD3D::Transform &trans)
+        {
+            m_transformStack.push(trans);
+        }
 
-        FDCore::TimeManager<> &getTimeManager();
+        void popTransform()
+        {
+            m_transformStack.pop();
+        }
 
-        const FDCore::TimeManager<> &getTimeManager() const;
+        bool hasActiveCamera() const
+        {
+            return m_activeCamera == nullptr;
+        }
 
-        FD3D::Scene &getScene();
-        const FD3D::Scene &getScene() const;
+        FD3D::Camera *getActiveCamera()
+        {
+            return m_activeCamera;
+        }
 
-        FD3D::TransformStack &getTransformStack();
-        const FD3D::TransformStack &getTransformStack() const;
-        void pushTransform(const FD3D::Transform &trans);
-        void popTransform();
+        const FD3D::Camera *getActiveCamera() const
+        {
+            return m_activeCamera;
+        }
 
-        bool hasActiveCamera() const;
+        void setActiveCamera(FD3D::Camera *cam)
+        {
+            m_activeCamera = cam;
+        }
 
-        FD3D::Camera *getActiveCamera();
+        FD3D::Projection *getProjection()
+        {
+            return (m_activeCamera == nullptr ?
+                        nullptr
+                      : &m_activeCamera->projection);
+        }
 
-        const FD3D::Camera *getActiveCamera() const;
+        const FD3D::Projection *getProjection() const
+        {
+            return (m_activeCamera == nullptr ?
+                        nullptr
+                      : &m_activeCamera->projection);
+        }
 
-        FD3D::Projection *getProjection();
+        FD3D::Light *getLight()
+        {
+            return m_light;
+        }
 
-        const FD3D::Projection *getProjection() const;
+        const FD3D::Light *getLight() const
+        {
+            return m_light;
+        }
 
-        void setActiveCamera(FD3D::Camera *cam);
-
-
+        void setLight(FD3D::Light *light)
+        {
+            m_light = light;
+        }
 
         void renderScene();
         void renderNode(FD3D::SceneNodeProxy node);
         void addNodeChildren(FD3D::SceneNode::id_type id,
                              std::stack<FD3D::SceneNode::id_type> &todo);
 
+        void initProjection(int width, int height);
 
+    protected:
 
-        void onInit(FDGL::BaseOpenGLWindow &w);
+        void init(FDGL::BaseOpenGLWindow &w) override;
 
-        void onQuit(FDGL::BaseOpenGLWindow &);
+        void quit(FDGL::BaseOpenGLWindow &) override;
 
-        void onRender(FDGL::BaseOpenGLWindow &w);
+        void render(FDGL::BaseOpenGLWindow &w) override;
 
-        void onResize(FDGL::BaseOpenGLWindow &, int width, int height);
+        void resize(FDGL::BaseOpenGLWindow &, int width, int height) override;
 
-        void onError(FDGL::ErrorSoure source, FDGL::ErrorType type,
-                     uint32_t id, FDGL::ErrorSeverity level,
-                     const std::string &msg) const;
+        void errorHandler(FDGL::ErrorSoure source, FDGL::ErrorType type,
+                          uint32_t id, FDGL::ErrorSeverity level,
+                          const std::string &msg) const override;
+
 
     private:
 
@@ -175,25 +163,15 @@ class Renderer
 
         void initScene();
 
-        void initProjection(FDGL::BaseOpenGLWindow &w);
-
-        void initTextures();
-
 
         bool loadScene(const std::string &path);
 
         void drawLight();
 
-        static void debugCallbackHelper(GLenum source,
-                                        GLenum type,
-                                        GLuint id,
-                                        GLenum severity,
-                                        GLsizei length,
-                                        const GLchar *message,
-                                        const void *userParam);
-
         void rotateCamera(float elapsedTime);
+        void rotateLight(float elapsedTime);
 
+        void renderMesh(FDGL::BufferedMesh *mesh);
 };
 
 

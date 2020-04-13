@@ -177,7 +177,7 @@ namespace FDGL
         TextureMultisample2DArray = GL_TEXTURE_2D_MULTISAMPLE_ARRAY
     };
 
-    enum class TextureWrapMode : int32_t
+    enum class TextureWrapMode : uint32_t
     {
         Invalid = GL_INVALID_ENUM,
         ClampToEdge = GL_CLAMP_TO_EDGE,
@@ -187,7 +187,7 @@ namespace FDGL
         MirrorClampToEdge = GL_MIRROR_CLAMP_TO_EDGE
     };
 
-    enum class TextureFilter : int32_t
+    enum class TextureFilter : uint32_t
     {
         Invalid = GL_INVALID_ENUM,
         Nearest = GL_NEAREST,
@@ -198,7 +198,7 @@ namespace FDGL
         LinearMipmapLinear = GL_LINEAR_MIPMAP_LINEAR
     };
 
-    enum class DrawMode : GLenum
+    enum class DrawMode : uint32_t
     {
         Invalid = GL_INVALID_ENUM,
         Points = GL_POINTS,
@@ -216,6 +216,20 @@ namespace FDGL
     };
 
     std::vector<GLenum> getLastOpenGLErrors();
+
+    enum class CullFace : uint32_t
+    {
+        Invalid = GL_INVALID_ENUM,
+        Front = GL_FRONT,
+        Back = GL_BACK
+    };
+
+    enum class FrontFaceMode : uint32_t
+    {
+        Invalid = GL_INVALID_ENUM,
+        ClockWise = GL_CW,
+        CounterClockWise = GL_CCW
+    };
 
     template<typename ...Args>
     bool setUniform(uint32_t shader, const std::string &name, const Args... value)

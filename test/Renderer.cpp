@@ -10,99 +10,15 @@
 #include "GLUtils.h"
 
 Renderer::Renderer(FDGL::BaseOpenGLContext &ctx):
-    m_ctx(ctx),
+    FDGL::BaseRenderer(ctx),
     m_activeCamera(nullptr)
 {}
-
-const FDGL::BaseOpenGLContext &Renderer::getOpenGLContex() const
-{
-    return m_ctx;
-}
-
-FDGL::BaseOpenGLContext &Renderer::getOpenGLContex()
-{
-    return m_ctx;
-}
-
-FDCore::TimeManager<> &Renderer::getTimeManager()
-{
-    return m_timeMgr;
-}
-
-const FDCore::TimeManager<> &Renderer::getTimeManager() const
-{
-    return m_timeMgr;
-}
-
-FD3D::Scene &Renderer::getScene()
-{
-    return m_scene;
-}
-
-const FD3D::Scene &Renderer::getScene() const
-{
-    return m_scene;
-}
-
-FD3D::TransformStack &Renderer::getTransformStack()
-{
-    return m_transformStack;
-}
-
-const FD3D::TransformStack &Renderer::getTransformStack() const
-{
-    return m_transformStack;
-}
-
-void Renderer::pushTransform(const FD3D::Transform &trans)
-{
-    m_transformStack.push(trans);
-}
-
-void Renderer::popTransform()
-{
-    m_transformStack.pop();
-}
-
-bool Renderer::hasActiveCamera() const
-{
-    return m_activeCamera == nullptr;
-}
-
-FD3D::Camera *Renderer::getActiveCamera()
-{
-    return m_activeCamera;
-}
-
-const FD3D::Camera *Renderer::getActiveCamera() const
-{
-    return m_activeCamera;
-}
-
-FD3D::Projection *Renderer::getProjection()
-{
-    return (m_activeCamera == nullptr ?
-                nullptr
-              : &m_activeCamera->projection);
-}
-
-const FD3D::Projection *Renderer::getProjection() const
-{
-    return (m_activeCamera == nullptr ?
-                nullptr
-              : &m_activeCamera->projection);
-}
-
-void Renderer::setActiveCamera(FD3D::Camera *cam)
-{
-    m_activeCamera = cam;
-}
 
 void Renderer::renderScene()
 {
     std::stack<FD3D::SceneNode::id_type> todo;
     std::unordered_map<FD3D::SceneNode::id_type, NodeState> nodeStates;
-    todo.push(m_scene.getRootId());
+    todo.push(m_scene->getRootId());
     while(!todo.empty())
     {
         if(nodeStates.find(todo.top()) == nodeStates.end())
@@ -116,7 +32,7 @@ void Renderer::renderScene()
             break;
 
             case NodeState::Explored:
-                renderNode(m_scene.getNode(current.getId()));
+                renderNode(m_scene->getNode(current.getId()));
             break;
 
             case NodeState::Rendered:
@@ -128,40 +44,37 @@ void Renderer::renderScene()
     }
 }
 
-void Renderer::onInit(FDGL::BaseOpenGLWindow &w)
+void Renderer::init(FDGL::BaseOpenGLWindow &w)
 {
-    m_timeMgr.start();
     initContext();
     initWindow(w);
-    initScene();
-    initProjection(w);
-    initTextures();
 }
 
-void Renderer::onQuit(FDGL::BaseOpenGLWindow &)
+void Renderer::quit(FDGL::BaseOpenGLWindow &)
 {
 
 }
 
-void Renderer::onRender(FDGL::BaseOpenGLWindow &w)
+void Renderer::render(FDGL::BaseOpenGLWindow &w)
 {
     w.clear();
 
     drawLight();
 
-    rotateCamera(m_timeMgr.getElapsedTime() / 1000.0f);
     renderScene();
 
     w.swapBuffer();
+
+    //rotateLight(m_timeMgr.getElapsedTime() / 1000.0f);
 }
 
-void Renderer::onResize(FDGL::BaseOpenGLWindow &, int width, int height)
+void Renderer::resize(FDGL::BaseOpenGLWindow &, int width, int height)
 {
     getActiveCamera()->projection.setWidth(width);
     getActiveCamera()->projection.setHeight(height);
 }
 
-void Renderer::onError(FDGL::ErrorSoure source, FDGL::ErrorType type, uint32_t id, FDGL::ErrorSeverity level, const std::string &msg) const
+void Renderer::errorHandler(FDGL::ErrorSoure source, FDGL::ErrorType type, uint32_t id, FDGL::ErrorSeverity level, const std::string &msg) const
 {
     constexpr const char *format = "GL_DEBUG_MESSAGE:"
                                    "\n{"
@@ -182,6 +95,7 @@ void Renderer::initContext()
 {
     m_ctx.enableDepth();
     m_ctx.enableFaceCulling();
+    m_ctx.cullFace(FDGL::CullFace::Front);
     m_ctx.enableDebugOutut();
     glDepthFunc(GL_LESS);
     glDebugMessageCallback(&Renderer::debugCallbackHelper, this);
@@ -204,52 +118,52 @@ void Renderer::initWindow(FDGL::BaseOpenGLWindow &w)
 void Renderer::initScene()
 {
     assert(loadScene("../../FDGL/test/resources/crate/CrateModel.obj"));
-    std::vector<FD3D::CameraNode*> cams = m_scene.getNodesAs<FD3D::CameraNode>();
+    std::vector<FD3D::CameraNode*> cams = m_scene->getNodesAs<FD3D::CameraNode>();
     if(cams.empty())
     {
         std::unique_ptr<FD3D::CameraNode> cam(new FD3D::CameraNode);
         cam->setName("default_camera");
+        cam->getEntity().setPosition(glm::vec3(0.0f, 3.0f, 10.0f));
         cams.push_back(cam.get());
-        m_scene.addNode(cam.release());
+        m_scene->addNode(cam.release());
     }
 
     m_activeCamera = &cams.front()->getEntity();
 
-    std::vector<FD3D::LightNode*> lights = m_scene.getNodesAs<FD3D::LightNode>();
+    std::vector<FD3D::LightNode*> lights = m_scene->getNodesAs<FD3D::LightNode>();
     if(lights.empty())
     {
         std::unique_ptr<FD3D::LightNode> light(new FD3D::LightNode);
         light->setName("default_light");
-        light->getEntity().setType(FD3D::LightType::DirectionalLight);
-        light->getEntity().setDirection(glm::vec3(1.0f, -1.0f, 0.0f));
+        FD3D::Light &l = light->getEntity();
+        l.setPosition(glm::vec3(0.0f, 0.0f, 3.0f));
+        l.setDirection(glm::vec3(0.0f, 0.0f, -1.0f));
+        l.setType(FD3D::LightType::DirectionalLight);
+        l.setDirection(glm::vec3(1.0f, -1.0f, 0.0f));
+        l.attenuation.setConstantAttenuation(5.0f);
         lights.push_back(light.get());
-        m_scene.addNode(light.release());
+        m_scene->addNode(light.release());
     }
 
     m_light = &lights.front()->getEntity();
 
-    std::vector<FDGL::BufferedMesh*> meshes = m_scene.getComponentsAs<FDGL::BufferedMesh>();
+    std::vector<FDGL::BufferedMesh*> meshes = m_scene->getComponentsAs<FDGL::BufferedMesh>();
     for(auto *m: meshes)
         m->setVAOFunctionToDefault();
 }
 
-void Renderer::initProjection(FDGL::BaseOpenGLWindow &w)
+void Renderer::initProjection(int width, int height)
 {
     FD3D::Projection *proj = getProjection();
     if(proj == nullptr)
         return;
 
     proj->setFov(glm::radians(45.0f));
-    proj->setWidth(w.getWidth());
-    proj->setHeight(w.getHeight());
+    proj->setWidth(width);
+    proj->setHeight(height);
     proj->setNear(0.1f);
     proj->setFar(100.0f);
     proj->setType(FD3D::ProjectionType::Perspective);
-}
-
-void Renderer::initTextures()
-{
-    m_tex = loadTexture("../../FDGL/test/resources/wall.jpg");
 }
 
 bool Renderer::loadScene(const std::string &path)
@@ -281,7 +195,7 @@ bool Renderer::loadScene(const std::string &path)
     loader.setMeshAllocator([](){
         return new FDGL::BufferedMesh();
     });
-    return loader.loadScene(m_scene, path, aiProcess_Triangulate);
+    return loader.loadScene(*m_scene, path, aiProcess_Triangulate);
 }
 
 void Renderer::renderNode(FD3D::SceneNodeProxy node)
@@ -293,41 +207,17 @@ void Renderer::renderNode(FD3D::SceneNodeProxy node)
     if(meshes.empty())
         return;
 
-    FDGL::OpenGLShaderProgramWrapper program;
     for(size_t i = 0, imax = meshes.size(); i < imax; ++i)
     {
-        FDGL::ShaderComponent *shadComp = nullptr;
-        if(meshes[i]->hasShader())
-        {
-            FD3D::Component *comp = m_scene.getComponent(meshes[i]->getShaderId());
-            if(!comp)
-                shadComp = comp->as<FDGL::ShaderComponent>();
-        }
-
-        if(shadComp)
-            program = shadComp->getShaderProgram();
-        else
-            program = m_ctx.getRessource("default_mesh_shader");
-
-        program.bind();
-        program.setUniform("texture", 0);
-        program.setUniform(0, m_transformStack.getCurrentMatrix());
-        program.setUniform(1, getActiveCamera()->getMatrix());
-        program.setUniform(2, getProjection()->getMatrix());
-        program.setUniform("lightColor", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-
-        m_tex.activateTexture(0);
-        m_tex.bind(FDGL::TextureTarget::Texture2D);
-
-        meshes[i]->getVAO().bind();
-        FDGL::drawElements<uint32_t>(FDGL::DrawMode::Triangles, meshes[i]->getNumberOfIndices(), nullptr);
+        //node->as<FD3D::ObjectNode>()->getEntity().setRotation(glm::vec3(0, m_timeMgr.getElapsedTime() / 10000.0f, 0));
+        renderMesh(meshes[i]);
     }
 }
 
 void Renderer::addNodeChildren(FD3D::SceneNode::id_type id,
                                std::stack<FD3D::SceneNode::id_type> &todo)
 {
-    FD3D::SceneNodeProxy node = m_scene.getNode(id);
+    FD3D::SceneNodeProxy node = m_scene->getNode(id);
     std::vector<FD3D::SceneNode::id_type> toAdd = node->getChildIds();
     for(size_t i = 0, imax = toAdd.size(); i < imax; ++i)
         todo.push(toAdd[i]);
@@ -342,18 +232,9 @@ void Renderer::drawLight()
     program.setUniform(1, getActiveCamera()->getMatrix());
     program.setUniform(2, getProjection()->getMatrix());
     program.setUniform("scale", 0.5f);
-    program.setUniform("lightColor", m_light->color.ambient);
+    program.setUniform("lightColor", m_light->color.diffuse);
     vao.bind();
     FDGL::drawArrays(FDGL::DrawMode::Triangles, 0, 36);
-}
-
-void Renderer::debugCallbackHelper(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
-{
-    const Renderer *r = reinterpret_cast<const Renderer *>(userParam);
-    r->onError(static_cast<FDGL::ErrorSoure>(source),
-               static_cast<FDGL::ErrorType>(type), id,
-               static_cast<FDGL::ErrorSeverity>(severity),
-               std::string(message, static_cast<size_t>(length)));
 }
 
 void Renderer::rotateCamera(float elapsedTime)
@@ -363,4 +244,119 @@ void Renderer::rotateCamera(float elapsedTime)
     float camZ = std::cos(elapsedTime) * radius;
     getActiveCamera()->setPosition(glm::vec3(camX, 0.0f, camZ));
     getActiveCamera()->setRotation(glm::vec3(0.0f, elapsedTime, 0.0f));
+}
+
+void Renderer::rotateLight(float elapsedTime)
+{
+    float radius = 3.0f;
+    glm::vec3 &p = m_light->getPosition();
+    p.x = std::sin(elapsedTime) * radius;
+    p.z = std::cos(elapsedTime) * radius;
+}
+
+void Renderer::renderMesh(FDGL::BufferedMesh *mesh)
+{
+    FDGL::OpenGLShaderProgramWrapper program;
+    FDGL::ShaderComponent *shadComp = nullptr;
+    if(mesh->hasShader())
+    {
+        FD3D::Component *comp = m_scene->getComponent(mesh->getShaderId());
+        if(!comp)
+            shadComp = comp->as<FDGL::ShaderComponent>();
+    }
+
+    if(shadComp)
+        program = shadComp->getShaderProgram();
+    else
+        program = m_ctx.getRessource("default_mesh_shader");
+
+    FD3D::Material *mat = nullptr;
+    if(mesh->hasMaterial())
+    {
+
+        FD3D::Component *comp = m_scene->getComponent(mesh->getMaterialId());
+        if(comp)
+            mat = comp->as<FD3D::Material>();
+    }
+
+    program.bind();
+    program.setUniform("texture", 0);
+    program.setUniform(0, m_transformStack.getCurrentMatrix());
+    program.setUniform(1, getActiveCamera()->getMatrix());
+    program.setUniform(2, getProjection()->getMatrix());
+    program.setUniform(3, m_activeCamera->getPosition());
+    program.setUniform(4, m_light->getPosition());
+    program.setUniform(5, m_light->color.ambient);
+    program.setUniform(6, m_light->color.diffuse);
+    program.setUniform(7, m_light->color.specular);
+    program.setUniform(8, m_light->attenuation.getConstantAttenuation());
+    program.setUniform(9, m_light->attenuation.getLinearAttenuation());
+    program.setUniform(10, m_light->attenuation.getQuadraticAttenuation());
+
+    program.setUniform(11, mat->getAmbientColor());
+    program.setUniform(12, mat->getDiffuseColor());
+    program.setUniform(13, mat->getSpecularColor());
+    program.setUniform(14, mat->getShininess());
+
+    FDGL::OpenGLTextureWrapper tex(mat->getTextures()[FD3D::TextureType::Ambient][0]);
+
+    tex.activateTexture(0);
+    tex.bind(FDGL::TextureTarget::Texture2D);
+
+    mesh->getVAO().bind();
+    FDGL::drawElements<uint32_t>(FDGL::DrawMode::Triangles, mesh->getNumberOfIndices(), nullptr);
+}
+
+Renderer::NodeTransitionGuard::NodeTransitionGuard(Renderer &r, FD3D::SceneNode::id_type id, Renderer::NodeState &state):
+    m_renderer(r),
+    m_id(id),
+    m_state(state)
+{}
+
+Renderer::NodeTransitionGuard::~NodeTransitionGuard()
+{
+    applyTransition();
+}
+
+FD3D::SceneNode::id_type Renderer::NodeTransitionGuard::getId()
+{
+    return m_id;
+}
+
+Renderer::NodeState Renderer::NodeTransitionGuard::getState() const
+{
+    return m_state;
+}
+
+void Renderer::NodeTransitionGuard::applyTransition()
+{
+    switch (m_state)
+    {
+        case NodeState::New:
+        {
+            FD3D::ObjectNode *obj = m_renderer.getScene()->getNode(m_id)->as<FD3D::ObjectNode>();
+            if(obj != nullptr)
+                m_renderer.pushTransform(obj->getEntity());
+
+            m_state = NodeState::Explored;
+        }
+        break;
+
+        case NodeState::Explored:
+        m_state =  NodeState::Rendered;
+        break;
+
+        case NodeState::Rendered:
+        {
+            FD3D::ObjectNode *obj = m_renderer.getScene()->getNode(m_id)->as<FD3D::ObjectNode>();
+            if(obj != nullptr)
+                m_renderer.popTransform();
+
+            m_state = NodeState::Done;
+        }
+        break;
+
+        default:
+        break;
+    }
 }

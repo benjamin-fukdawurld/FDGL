@@ -7,6 +7,39 @@
 
 namespace FDGL
 {
+    enum class ErrorType : uint32_t;
+    std::string errorTypeToString(ErrorType type);
+
+    enum class ErrorSoure : uint32_t;
+    std::string errorSourceToString(ErrorSoure src);
+
+    enum class ErrorSeverity : uint32_t;
+    std::string errorSeverityToString(ErrorSeverity level);
+
+    enum class BufferTarget : uint32_t;
+    enum class BufferUsage : uint32_t;
+    enum class BufferMappingAccess : uint32_t;
+    enum class FrameBufferTarget : uint32_t;
+    enum class FrameBufferAttachment : uint32_t;
+    enum class ShaderType : uint32_t;
+    enum class TextureTarget : uint32_t;
+    enum class TextureWrapMode : uint32_t;
+    enum class TextureFilter : uint32_t;
+    enum class DrawMode : uint32_t;
+    enum class CullFace : uint32_t;
+    enum class FrontFaceMode : uint32_t;
+
+    void enableAttrib(uint location);
+    void drawArrays(DrawMode mode, size_t first, size_t count);
+    void drawArrays(DrawMode mode, size_t first, size_t count, size_t instanceCount);
+
+    template<typename IndexType, size_t IndexSize = sizeof(IndexType)>
+    void drawElements(DrawMode mode, size_t count, const IndexType *indices);
+
+    template<typename IndexType, size_t IndexSize = sizeof(IndexType)>
+    void drawElements(DrawMode mode, size_t count, const IndexType *indices,
+                      size_t beginIndex, size_t endIndex);
+
     template<typename T, size_t nb_component, bool normalize = false>
     bool setAttrib(int location, size_t stride, const T *value);
 

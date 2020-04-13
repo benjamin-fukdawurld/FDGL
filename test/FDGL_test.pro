@@ -10,7 +10,7 @@ MAKEFILE = ../../build/makefiles/$${TARGET}
 OBJECTS_DIR = ../../build/.obj/$${TARGET}
 
 LIBS += -L../../build/lib -lglad -lFDGL -lFD3D -lFDCore
-LIBS += -lglfw -lGL -lpthread -ldl -lX11 -lXrandr -lstdc++
+LIBS += -lglfw -lGL -lpthread -ldl -lX11 -lXrandr -lstdc++ -lpython3.7m
 LIBS += -L../../thirdparty/assimp/bin -lassimp
 
 
@@ -19,20 +19,25 @@ INCLUDEPATH += \
     ../../FDCore/include \
     ../../FD3D/include \
     ../../thirdparty/glad/include \
-    ../../thirdparty/ \
+    ../../thirdparty/pybind11/include \
     ../../thirdparty/glm \
     ../../thirdparty/assimp/include \
+    ../../thirdparty/ \
+    /usr/include/python3.7m \
+    /usr/include/x86_64-linux-gnu/python3.7m \
 
 SOURCES += \
     GLFWImpl.cpp \
     GLUtils.cpp \
     main.cpp \
-    Renderer.cpp
+    Renderer.cpp \
+    Engine.cpp
 
 HEADERS += \
     GLFWImpl.h \
     GLUtils.h \
-    Renderer.h
+    Renderer.h \
+    Engine.h
 
 OTHER_FILES += \
     resources/vertex.vert \
@@ -41,4 +46,6 @@ OTHER_FILES += \
 
 DISTFILES += \
     resources/light.vert \
-    resources/light.frag
+    resources/light.frag \
+    resources/crate/CrateModel.obj \
+    resources/crate/cratemodel.mtl

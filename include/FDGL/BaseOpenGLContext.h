@@ -5,8 +5,8 @@
 #include <functional>
 
 #include <FDCore/AssociativeContainer.h>
-
 #include <FDGL/OpenGLResource.h>
+#include <FDGL/OpenGLUtilsForward.h>
 
 namespace FDGL
 {
@@ -42,6 +42,8 @@ namespace FDGL
             void enableFaceCulling();
             bool isFaceCullingEnabled() const;
             void disableFaceCulling();
+
+            void cullFace(FDGL::CullFace face);
 
             void enableMultiSampling();
             bool isMultiSamplingEnabled() const;

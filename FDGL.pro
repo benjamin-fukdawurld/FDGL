@@ -37,7 +37,8 @@ SOURCES += \
     src/OpenGLFrameBuffer.cpp \
     src/OpenGLRenderBuffer.cpp \
     src/BufferedMesh.cpp \
-    src/ShaderComponent.cpp
+    src/ShaderComponent.cpp \
+    src/BaseRenderer.cpp
 
 HEADERS += \
     include/FDGL/BaseOpenGLContext.h \
@@ -53,7 +54,8 @@ HEADERS += \
     include/FDGL/OpenGLFrameBuffer.h \
     include/FDGL/OpenGLRenderBuffer.h \
     include/FDGL/BufferedMesh.h \
-    include/FDGL/ShaderComponent.h
+    include/FDGL/ShaderComponent.h \
+    include/FDGL/BaseRenderer.h
 
 unix {
     target.path = /usr/lib

@@ -30,6 +30,11 @@ FDGL::BaseOpenGLWindow::ResizeCallback FDGL::BaseOpenGLWindow::getResizeStrategy
     return m_resizeStrategy;
 }
 
+FDGL::BaseOpenGLWindow::InputCallback FDGL::BaseOpenGLWindow::getInputStrategy()
+{
+    return m_inputStrategy;
+}
+
 void FDGL::BaseOpenGLWindow::init()
 {
     if(m_initStrategy)
@@ -50,7 +55,14 @@ void FDGL::BaseOpenGLWindow::onResize(int width, int height)
 
 void FDGL::BaseOpenGLWindow::render()
 {
-    m_renderStrategy(*this);
+    if(m_renderStrategy)
+        m_renderStrategy(*this);
+}
+
+void FDGL::BaseOpenGLWindow::processInput()
+{
+    if(m_inputStrategy)
+        m_inputStrategy(*this);
 }
 
 void FDGL::BaseOpenGLWindow::clear() const

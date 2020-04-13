@@ -24,7 +24,6 @@ class Window : public FDGL::BaseOpenGLWindow
         std::string m_title;
         GLFWwindow *m_window;
 
-
     public:
         Window();
         ~Window() override;
@@ -35,7 +34,6 @@ class Window : public FDGL::BaseOpenGLWindow
         bool create(int width, int height, const std::string &title) override;
         void destroy() override;
         bool isOpen() const override;
-        void processInput() override;
 
         void swapBuffer() const override;
 
