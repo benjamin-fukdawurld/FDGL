@@ -45,7 +45,6 @@ Window::~Window()
         return;
 
     destroy();
-    quit();
 }
 
 bool Window::create(int width, int height, const std::string &title)

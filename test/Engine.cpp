@@ -147,7 +147,7 @@ void Engine::initScene()
         if(!m_behaviors.contains(light->getId()))
             m_behaviors.insert(light->getId(), {});
 
-        m_behaviors[light->getId()]->value.push_back(b->getId());
+        m_behaviors[light->getId()]->push_back(b->getId());
         b.release();
 
         m_scene.addNode(light.release());
@@ -176,7 +176,7 @@ void Engine::initScene()
             if(!m_behaviors.contains(n->getId()))
                 m_behaviors.insert(n->getId(), {});
 
-            m_behaviors[n->getId()]->value.push_back(b->getId());
+            m_behaviors[n->getId()]->push_back(b->getId());
             b.release();
         }
     }

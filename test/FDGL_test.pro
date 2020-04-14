@@ -7,7 +7,7 @@ CONFIG -= qt
 
 DESTDIR = ../../build/bin
 MAKEFILE = ../../build/makefiles/$${TARGET}
-OBJECTS_DIR = ../../build/.obj/$${TARGET}
+OBJECTS_DIR = ../../build/obj/$${TARGET}
 
 LIBS += -L../../build/lib -lglad -lFDGL -lFD3D -lFDCore
 LIBS += -lglfw -lGL -lpthread -ldl -lX11 -lXrandr -lstdc++ -lpython3.7m
