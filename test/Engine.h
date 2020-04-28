@@ -9,17 +9,6 @@
 
 #include "Renderer.h"
 
-class PythonEngine
-{
-    public:
-        PythonEngine();
-        virtual ~PythonEngine();
-
-        void exec(const std::string &code, pybind11::dict locals);
-        void execFile(const std::string &filePath, pybind11::dict locals);
-};
-
-
 class BaseEngine
 {
     protected:

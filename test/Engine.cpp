@@ -17,27 +17,6 @@
 #include "Renderer.h"
 
 
-PythonEngine::PythonEngine()
-{
-    pybind11::initialize_interpreter();
-}
-
-PythonEngine::~PythonEngine()
-{
-    pybind11::finalize_interpreter();
-}
-
-void PythonEngine::exec(const std::string &code, pybind11::dict locals)
-{
-    pybind11::exec(code.c_str(), pybind11::globals(), locals);
-}
-
-void PythonEngine::execFile(const std::string &filePath, pybind11::dict locals)
-{
-    pybind11::eval_file(filePath, pybind11::globals(), locals);
-}
-
-
 
 
 
