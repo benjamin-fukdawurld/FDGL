@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-#include <FDGL/BufferedMesh.h>
+#include <FDGL/BufferedMeshComponent.h>
 #include <FDGL/ShaderComponent.h>
 
 #include <FD3D/SceneGraph/SceneLoader.h>
@@ -123,19 +123,19 @@ void Renderer::initScene()
     {
         std::unique_ptr<FD3D::CameraNode> cam(new FD3D::CameraNode);
         cam->setName("default_camera");
-        cam->getEntity().setPosition(glm::vec3(0.0f, 3.0f, 10.0f));
+        cam->getEntity()->setPosition(glm::vec3(0.0f, 3.0f, 10.0f));
         cams.push_back(cam.get());
         m_scene->addNode(cam.release());
     }
 
-    m_activeCamera = &cams.front()->getEntity();
+    m_activeCamera = cams.front()->getEntity();
 
     std::vector<FD3D::LightNode*> lights = m_scene->getNodesAs<FD3D::LightNode>();
     if(lights.empty())
     {
         std::unique_ptr<FD3D::LightNode> light(new FD3D::LightNode);
         light->setName("default_light");
-        FD3D::Light &l = light->getEntity();
+        FD3D::Light &l = *light->getEntity();
         l.setPosition(glm::vec3(0.0f, 0.0f, 3.0f));
         l.setDirection(glm::vec3(0.0f, 0.0f, -1.0f));
         l.setType(FD3D::LightType::DirectionalLight);
@@ -145,9 +145,9 @@ void Renderer::initScene()
         m_scene->addNode(light.release());
     }
 
-    m_light = &lights.front()->getEntity();
+    m_light = lights.front()->getEntity();
 
-    std::vector<FDGL::BufferedMesh*> meshes = m_scene->getComponentsAs<FDGL::BufferedMesh>();
+    std::vector<FDGL::BufferedMeshComponent*> meshes = m_scene->getComponentsAs<FDGL::BufferedMeshComponent>();
     for(auto *m: meshes)
         m->setVAOFunctionToDefault();
 }
@@ -168,7 +168,7 @@ void Renderer::initProjection(int width, int height)
 
 bool Renderer::loadScene(const std::string &path)
 {
-    FDGL::BufferedMesh::setDefaultVAOFunction([](FDGL::BufferedMesh &mesh)
+    FDGL::BufferedMeshComponent::setDefaultVAOFunction([](FDGL::BufferedMeshComponent &mesh)
     {
         FDGL::OpenGLBufferWrapper vbo = mesh.getVBO();
         FDGL::OpenGLBufferWrapper ebo = mesh.getEBO();
@@ -193,7 +193,7 @@ bool Renderer::loadScene(const std::string &path)
         return loadTexture(texture);
     });
     loader.setMeshAllocator([](){
-        return new FDGL::BufferedMesh();
+        return new FDGL::BufferedMeshComponent();
     });
     return loader.loadScene(*m_scene, path, aiProcess_Triangulate);
 }
@@ -203,7 +203,7 @@ void Renderer::renderNode(FD3D::SceneNodeProxy node)
     if(!node)
         return;
 
-    std::vector<FDGL::BufferedMesh*> meshes = node.getComponentsAs<FDGL::BufferedMesh>();
+    std::vector<FDGL::BufferedMeshComponent*> meshes = node.getComponentsAs<FDGL::BufferedMeshComponent>();
     if(meshes.empty())
         return;
 
@@ -254,7 +254,7 @@ void Renderer::rotateLight(float elapsedTime)
     p.z = std::cos(elapsedTime) * radius;
 }
 
-void Renderer::renderMesh(FDGL::BufferedMesh *mesh)
+void Renderer::renderMesh(FDGL::BufferedMeshComponent *mesh)
 {
     FDGL::OpenGLShaderProgramWrapper program;
     FDGL::ShaderComponent *shadComp = nullptr;
@@ -270,13 +270,13 @@ void Renderer::renderMesh(FDGL::BufferedMesh *mesh)
     else
         program = m_ctx.getRessource("default_mesh_shader");
 
-    FD3D::Material *mat = nullptr;
+    FD3D::MaterialComponent *mat = nullptr;
     if(mesh->hasMaterial())
     {
 
         FD3D::Component *comp = m_scene->getComponent(mesh->getMaterialId());
         if(comp)
-            mat = comp->as<FD3D::Material>();
+            mat = comp->as<FD3D::MaterialComponent>();
     }
 
     program.bind();
@@ -298,7 +298,7 @@ void Renderer::renderMesh(FDGL::BufferedMesh *mesh)
     program.setUniform(13, mat->getSpecularColor());
     program.setUniform(14, mat->getShininess());
 
-    FDGL::OpenGLTextureWrapper tex(mat->getTextures()[FD3D::TextureType::Ambient][0]);
+    FDGL::OpenGLTextureObjectWrapper tex(mat->getTextures()[FD3D::TextureType::Ambient][0]);
 
     tex.activateTexture(0);
     tex.bind(FDGL::TextureTarget::Texture2D);
@@ -336,7 +336,7 @@ void Renderer::NodeTransitionGuard::applyTransition()
         {
             FD3D::ObjectNode *obj = m_renderer.getScene()->getNode(m_id)->as<FD3D::ObjectNode>();
             if(obj != nullptr)
-                m_renderer.pushTransform(obj->getEntity());
+                m_renderer.pushTransform(*obj->getEntity());
 
             m_state = NodeState::Explored;
         }

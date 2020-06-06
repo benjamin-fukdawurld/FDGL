@@ -7,20 +7,20 @@
 
 namespace FDGL
 {
-    class OpenGLBufferWrapper : public FDGL::OpenGLResourceWrapper
+    class OpenGLBufferWrapper : public FDGL::OpenGLObjectWrapper
     {
         public:
-            explicit OpenGLBufferWrapper(uint32_t id = 0) : OpenGLResourceWrapper(id) {}
-            OpenGLBufferWrapper(const OpenGLBufferWrapper &other) : OpenGLResourceWrapper(other) {}
-            OpenGLBufferWrapper(const OpenGLResourceWrapper &other) : OpenGLResourceWrapper(other) {}
+            explicit OpenGLBufferWrapper(uint32_t id = 0) : OpenGLObjectWrapper(id) {}
+            OpenGLBufferWrapper(const OpenGLBufferWrapper &other) : OpenGLObjectWrapper(other) {}
+            OpenGLBufferWrapper(const OpenGLObjectWrapper &other) : OpenGLObjectWrapper(other) {}
 
             OpenGLBufferWrapper(OpenGLBufferWrapper &&other);
 
-            OpenGLBufferWrapper(OpenGLResourceWrapper &&other);
+            OpenGLBufferWrapper(OpenGLObjectWrapper &&other);
 
-            OpenGLBufferWrapper &operator=(const OpenGLResourceWrapper &other);
+            OpenGLBufferWrapper &operator=(const OpenGLObjectWrapper &other);
 
-            OpenGLBufferWrapper &operator=(OpenGLResourceWrapper &&other);
+            OpenGLBufferWrapper &operator=(OpenGLObjectWrapper &&other);
 
             OpenGLBufferWrapper &operator=(const OpenGLBufferWrapper &other);
 
@@ -73,15 +73,15 @@ namespace FDGL
     };
 
     template<>
-    bool is<OpenGLBufferWrapper>(const OpenGLResourceWrapper &res);
+    bool is<OpenGLBufferWrapper>(const OpenGLObjectWrapper &res);
 
     template<>
-    const OpenGLBufferWrapper as<OpenGLBufferWrapper>(const OpenGLResourceWrapper &res);
+    const OpenGLBufferWrapper as<OpenGLBufferWrapper>(const OpenGLObjectWrapper &res);
 
     template<>
-    OpenGLBufferWrapper as<OpenGLBufferWrapper>(OpenGLResourceWrapper &res);
+    OpenGLBufferWrapper as<OpenGLBufferWrapper>(OpenGLObjectWrapper &res);
 
-    typedef OwnedRessource<OpenGLBufferWrapper> OpenGLBuffer;
+    typedef OwnedObject<OpenGLBufferWrapper> OpenGLBuffer;
 
     class OpenGLBufferBindGuard
     {

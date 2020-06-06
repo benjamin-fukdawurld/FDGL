@@ -16,22 +16,22 @@
 
 namespace FDGL
 {
-    class OpenGLShaderProgramWrapper : public FDGL::OpenGLResourceWrapper
+    class OpenGLShaderProgramWrapper : public FDGL::OpenGLObjectWrapper
     {
         public:
-            explicit OpenGLShaderProgramWrapper(uint32_t id = 0) : OpenGLResourceWrapper(id) {}
-            OpenGLShaderProgramWrapper(const OpenGLShaderProgramWrapper &other) : OpenGLResourceWrapper(other) {}
-            OpenGLShaderProgramWrapper(const OpenGLResourceWrapper &other) : OpenGLResourceWrapper(other) {}
+            explicit OpenGLShaderProgramWrapper(uint32_t id = 0) : OpenGLObjectWrapper(id) {}
+            OpenGLShaderProgramWrapper(const OpenGLShaderProgramWrapper &other) : OpenGLObjectWrapper(other) {}
+            OpenGLShaderProgramWrapper(const OpenGLObjectWrapper &other) : OpenGLObjectWrapper(other) {}
 
             OpenGLShaderProgramWrapper(OpenGLShaderProgramWrapper &&other);
 
-            OpenGLShaderProgramWrapper(OpenGLResourceWrapper &&other);
+            OpenGLShaderProgramWrapper(OpenGLObjectWrapper &&other);
 
             OpenGLShaderProgramWrapper(std::initializer_list<OpenGLShader> l);
 
-            OpenGLShaderProgramWrapper &operator=(const OpenGLResourceWrapper &other);
+            OpenGLShaderProgramWrapper &operator=(const OpenGLObjectWrapper &other);
 
-            OpenGLShaderProgramWrapper &operator=(OpenGLResourceWrapper &&other);
+            OpenGLShaderProgramWrapper &operator=(OpenGLObjectWrapper &&other);
 
             OpenGLShaderProgramWrapper &operator=(const OpenGLShaderProgramWrapper &other);
 
@@ -106,15 +106,15 @@ namespace FDGL
     };
 
     template<>
-    bool is<OpenGLShaderProgramWrapper>(const OpenGLResourceWrapper &res);
+    bool is<OpenGLShaderProgramWrapper>(const OpenGLObjectWrapper &res);
 
     template<>
-    const OpenGLShaderProgramWrapper as<OpenGLShaderProgramWrapper>(const OpenGLResourceWrapper &res);
+    const OpenGLShaderProgramWrapper as<OpenGLShaderProgramWrapper>(const OpenGLObjectWrapper &res);
 
     template<>
-    OpenGLShaderProgramWrapper as<OpenGLShaderProgramWrapper>(OpenGLResourceWrapper &res);
+    OpenGLShaderProgramWrapper as<OpenGLShaderProgramWrapper>(OpenGLObjectWrapper &res);
 
-    typedef OwnedRessource<OpenGLShaderProgramWrapper> OpenGLShaderProgram;
+    typedef OwnedObject<OpenGLShaderProgramWrapper> OpenGLShaderProgram;
 
     OpenGLShaderProgramWrapper operator ""_shad(const char *filePath, size_t);
 }

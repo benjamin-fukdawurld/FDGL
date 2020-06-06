@@ -5,21 +5,21 @@
 
 namespace FDGL
 {
-    class OpenGLVertexArrayWrapper : public FDGL::OpenGLResourceWrapper
+    class OpenGLVertexArrayWrapper : public FDGL::OpenGLObjectWrapper
     {
         public:
         public:
-            OpenGLVertexArrayWrapper(uint32_t id = 0) : OpenGLResourceWrapper(id) {}
-            OpenGLVertexArrayWrapper(const OpenGLVertexArrayWrapper &other) : OpenGLResourceWrapper(other) {}
-            OpenGLVertexArrayWrapper(const OpenGLResourceWrapper &other) : OpenGLResourceWrapper(other) {}
+            OpenGLVertexArrayWrapper(uint32_t id = 0) : OpenGLObjectWrapper(id) {}
+            OpenGLVertexArrayWrapper(const OpenGLVertexArrayWrapper &other) : OpenGLObjectWrapper(other) {}
+            OpenGLVertexArrayWrapper(const OpenGLObjectWrapper &other) : OpenGLObjectWrapper(other) {}
 
             OpenGLVertexArrayWrapper(OpenGLVertexArrayWrapper &&other);
 
-            OpenGLVertexArrayWrapper(OpenGLResourceWrapper &&other);
+            OpenGLVertexArrayWrapper(OpenGLObjectWrapper &&other);
 
-            OpenGLVertexArrayWrapper &operator=(const OpenGLResourceWrapper &other);
+            OpenGLVertexArrayWrapper &operator=(const OpenGLObjectWrapper &other);
 
-            OpenGLVertexArrayWrapper &operator=(OpenGLResourceWrapper &&other);
+            OpenGLVertexArrayWrapper &operator=(OpenGLObjectWrapper &&other);
 
             OpenGLVertexArrayWrapper &operator=(const OpenGLVertexArrayWrapper &other);
 
@@ -42,15 +42,15 @@ namespace FDGL
     };
 
     template<>
-    bool is<OpenGLVertexArrayWrapper>(const OpenGLResourceWrapper &res);
+    bool is<OpenGLVertexArrayWrapper>(const OpenGLObjectWrapper &res);
 
     template<>
-    const OpenGLVertexArrayWrapper as<OpenGLVertexArrayWrapper>(const OpenGLResourceWrapper &res);
+    const OpenGLVertexArrayWrapper as<OpenGLVertexArrayWrapper>(const OpenGLObjectWrapper &res);
 
     template<>
-    OpenGLVertexArrayWrapper as<OpenGLVertexArrayWrapper>(OpenGLResourceWrapper &res);
+    OpenGLVertexArrayWrapper as<OpenGLVertexArrayWrapper>(OpenGLObjectWrapper &res);
 
-    typedef OwnedRessource<OpenGLVertexArrayWrapper> OpenGLVertexArray;
+    typedef OwnedObject<OpenGLVertexArrayWrapper> OpenGLVertexArray;
 }
 
 #endif // OPENGLVERTEXARRAY_H

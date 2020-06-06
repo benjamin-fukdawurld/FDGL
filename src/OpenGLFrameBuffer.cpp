@@ -1,13 +1,13 @@
 #include "include/FDGL/OpenGLFrameBuffer.h"
 
 template<>
-bool FDGL::is<FDGL::OpenGLFrameBufferWrapper>(const OpenGLResourceWrapper &res)
+bool FDGL::is<FDGL::OpenGLFrameBufferWrapper>(const OpenGLObjectWrapper &res)
 {
     return glIsFramebuffer(res.getId());
 }
 
 template<>
-const FDGL::OpenGLFrameBufferWrapper FDGL::as<FDGL::OpenGLFrameBufferWrapper>(const FDGL::OpenGLResourceWrapper &res)
+const FDGL::OpenGLFrameBufferWrapper FDGL::as<FDGL::OpenGLFrameBufferWrapper>(const FDGL::OpenGLObjectWrapper &res)
 {
     if(!is<OpenGLFrameBufferWrapper>(res))
     return OpenGLFrameBufferWrapper();
@@ -16,7 +16,7 @@ const FDGL::OpenGLFrameBufferWrapper FDGL::as<FDGL::OpenGLFrameBufferWrapper>(co
 }
 
 template<>
-FDGL::OpenGLFrameBufferWrapper FDGL::as<FDGL::OpenGLFrameBufferWrapper>(FDGL::OpenGLResourceWrapper &res)
+FDGL::OpenGLFrameBufferWrapper FDGL::as<FDGL::OpenGLFrameBufferWrapper>(FDGL::OpenGLObjectWrapper &res)
 {
     if(!is<OpenGLFrameBufferWrapper>(res))
     return OpenGLFrameBufferWrapper();
@@ -29,7 +29,7 @@ FDGL::OpenGLFrameBufferWrapper::OpenGLFrameBufferWrapper(FDGL::OpenGLFrameBuffer
     *this = std::move(other);
 }
 
-FDGL::OpenGLFrameBufferWrapper::OpenGLFrameBufferWrapper(FDGL::OpenGLResourceWrapper &&other) : OpenGLFrameBufferWrapper()
+FDGL::OpenGLFrameBufferWrapper::OpenGLFrameBufferWrapper(FDGL::OpenGLObjectWrapper &&other) : OpenGLFrameBufferWrapper()
 {
     if(FDGL::is<OpenGLFrameBufferWrapper>(other))
         *this = std::move(other);
@@ -37,7 +37,7 @@ FDGL::OpenGLFrameBufferWrapper::OpenGLFrameBufferWrapper(FDGL::OpenGLResourceWra
 
 FDGL::OpenGLFrameBufferWrapper &FDGL::OpenGLFrameBufferWrapper::operator=(FDGL::OpenGLFrameBufferWrapper &&other)
 {
-    OpenGLResourceWrapper::operator=(std::move(other));
+    OpenGLObjectWrapper::operator=(std::move(other));
     return *this;
 }
 
@@ -72,7 +72,7 @@ bool FDGL::OpenGLFrameBufferWrapper::isComplete(FrameBufferTarget target) const
     return glCheckNamedFramebufferStatus(m_id, static_cast<GLenum>(target)) == GL_FRAMEBUFFER_COMPLETE;
 }
 
-void FDGL::OpenGLFrameBufferWrapper::attachTexture(OpenGLTextureWrapper tex, FrameBufferAttachment attachment, int level)
+void FDGL::OpenGLFrameBufferWrapper::attachTexture(OpenGLTextureObjectWrapper tex, FrameBufferAttachment attachment, int level)
 {
     glNamedFramebufferTexture(m_id, static_cast<GLenum>(attachment), *tex, level);
 }
@@ -86,22 +86,22 @@ void FDGL::OpenGLFrameBufferWrapper::attachRenderBuffer(OpenGLRenderBufferWrappe
 
 FDGL::OpenGLFrameBufferWrapper &FDGL::OpenGLFrameBufferWrapper::operator=(const FDGL::OpenGLFrameBufferWrapper &other)
 {
-    OpenGLResourceWrapper::operator=(other);
+    OpenGLObjectWrapper::operator=(other);
     return *this;
 }
 
-FDGL::OpenGLFrameBufferWrapper &FDGL::OpenGLFrameBufferWrapper::operator=(FDGL::OpenGLResourceWrapper &&other)
+FDGL::OpenGLFrameBufferWrapper &FDGL::OpenGLFrameBufferWrapper::operator=(FDGL::OpenGLObjectWrapper &&other)
 {
     if(FDGL::is<OpenGLFrameBufferWrapper>(other))
-        OpenGLResourceWrapper::operator=(std::move(other));
+        OpenGLObjectWrapper::operator=(std::move(other));
 
     return *this;
 }
 
-FDGL::OpenGLFrameBufferWrapper &FDGL::OpenGLFrameBufferWrapper::operator=(const FDGL::OpenGLResourceWrapper &other)
+FDGL::OpenGLFrameBufferWrapper &FDGL::OpenGLFrameBufferWrapper::operator=(const FDGL::OpenGLObjectWrapper &other)
 {
     if(FDGL::is<OpenGLFrameBufferWrapper>(other))
-        OpenGLResourceWrapper::operator=(other);
+        OpenGLObjectWrapper::operator=(other);
     return *this;
 }
 

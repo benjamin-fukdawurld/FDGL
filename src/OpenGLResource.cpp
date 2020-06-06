@@ -1,70 +1,66 @@
 #include <FDGL/OpenGLResource.h>
 
+#include <cassert>
 #include <glad/glad.h>
 
-FDGL::OpenGLResourceWrapper &FDGL::OpenGLResourceWrapper::operator=(FDGL::OpenGLResourceWrapper &&other)
-{
-    if(this == &other)
-        return *this;
+FDGL::BaseOpenGLResource::BaseOpenGLResource() :
+    BaseOpenGLResource("")
+{}
 
-    setId(other.m_id);
-    other.m_id = 0;
+FDGL::BaseOpenGLResource::BaseOpenGLResource(std::string_view resourceName):
+    AbstractResource(),
+    m_resourceName(resourceName),
+    m_resourceHash(std::hash<std::string>()(m_resourceName))
+{}
+
+FDGL::BaseOpenGLResource::BaseOpenGLResource(FDGL::BaseOpenGLResource &&res):
+    m_resourceName(std::move(res.m_resourceName)),
+    m_resourceHash(res.m_resourceHash)
+{}
+
+std::string_view FDGL::BaseOpenGLResource::getResourcePath() const { return ""; }
+
+void FDGL::BaseOpenGLResource::setResourcePath(std::string_view)
+{
+    static_assert("OpenGLResource has no path");
+}
+
+FDGL::BaseOpenGLResource &FDGL::BaseOpenGLResource::operator=(FDGL::BaseOpenGLResource &&res)
+{
+    release();
+    m_resourceHash = res.m_resourceHash;
+    m_resourceName = std::move(res.m_resourceName);
     return *this;
 }
 
-FDGL::OpenGLResourceWrapper &FDGL::OpenGLResourceWrapper::operator=(const FDGL::OpenGLResourceWrapper &other)
+std::string_view FDGL::BaseOpenGLResource::getResourceName() const
 {
-    setId(other.m_id);
-    return *this;
+    return m_resourceName;
 }
 
-FDGL::OpenGLResourceWrapper::~OpenGLResourceWrapper()
+void FDGL::BaseOpenGLResource::setResourceName(std::string_view resourceName)
 {
-
+    m_resourceName = resourceName;
+    m_resourceHash = std::hash<std::string>()(m_resourceName);
 }
 
-void FDGL::OpenGLResourceWrapper::destroy()
+size_t FDGL::BaseOpenGLResource::getResourceHash() const
 {
-    if(m_id == 0)
-        return;
-
-    if(glIsBuffer(m_id))
-        glDeleteBuffers(1, &m_id);
-    else if(glIsProgram(m_id))
-        glDeleteProgram(m_id);
-    else if(glIsShader(m_id))
-        glDeleteShader(m_id);
-    else if(glIsSampler(m_id))
-        glDeleteSamplers(1, &m_id);
-    else if(glIsTexture(m_id))
-        glDeleteTextures(1, &m_id);
-    else if(glIsFramebuffer(m_id))
-        glDeleteFramebuffers(1, &m_id);
-    else if (glIsVertexArray(m_id))
-        glDeleteVertexArrays(1, &m_id);
-    else if(glIsRenderbuffer(m_id))
-        glDeleteRenderbuffers(1, &m_id);
+    return  m_resourceHash;
 }
 
-void FDGL::OpenGLResourceWrapper::reset(uint32_t id)
+const char *FDGL::BaseOpenGLResource::getTypeCode() const
 {
-    m_id = id;
+    return FDCore::TypeCodeHelper<FDGL::BaseOpenGLResource>::code;
 }
 
-uint32_t FDGL::OpenGLResourceWrapper::release()
+size_t FDGL::BaseOpenGLResource::getTypeCodeHash() const
 {
-    uint32_t id = m_id;
-    m_id = 0;
-
-    return id;
+    return FDCore::TypeCodeHelper<FDGL::BaseOpenGLResource>::hash();
 }
 
-void FDGL::OpenGLResourceWrapper::setId(uint32_t id)
+bool FDGL::BaseOpenGLResource::matchTypeCodeHash(size_t hash) const
 {
-    reset(id);
-}
-
-void FDGL::OpenGLResourceWrapper::swap(FDGL::OpenGLResourceWrapper &other)
-{
-    std::swap(m_id, other.m_id);
+    return hash == FDCore::TypeCodeHelper<FDGL::BaseOpenGLResource>::hash()
+            || FDCore::AbstractResource::matchTypeCodeHash(hash);
 }

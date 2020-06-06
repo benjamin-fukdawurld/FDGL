@@ -10,20 +10,20 @@
 
 namespace FDGL
 {
-    class OpenGLFrameBufferWrapper : public FDGL::OpenGLResourceWrapper
+    class OpenGLFrameBufferWrapper : public FDGL::OpenGLObjectWrapper
     {
         public:
-            explicit OpenGLFrameBufferWrapper(uint32_t id = 0) : OpenGLResourceWrapper(id) {}
-            OpenGLFrameBufferWrapper(const OpenGLFrameBufferWrapper &other) : OpenGLResourceWrapper(other) {}
-            OpenGLFrameBufferWrapper(const OpenGLResourceWrapper &other) : OpenGLResourceWrapper(other) {}
+            explicit OpenGLFrameBufferWrapper(uint32_t id = 0) : OpenGLObjectWrapper(id) {}
+            OpenGLFrameBufferWrapper(const OpenGLFrameBufferWrapper &other) : OpenGLObjectWrapper(other) {}
+            OpenGLFrameBufferWrapper(const OpenGLObjectWrapper &other) : OpenGLObjectWrapper(other) {}
 
             OpenGLFrameBufferWrapper(OpenGLFrameBufferWrapper &&other);
 
-            OpenGLFrameBufferWrapper(OpenGLResourceWrapper &&other);
+            OpenGLFrameBufferWrapper(OpenGLObjectWrapper &&other);
 
-            OpenGLFrameBufferWrapper &operator=(const OpenGLResourceWrapper &other);
+            OpenGLFrameBufferWrapper &operator=(const OpenGLObjectWrapper &other);
 
-            OpenGLFrameBufferWrapper &operator=(OpenGLResourceWrapper &&other);
+            OpenGLFrameBufferWrapper &operator=(OpenGLObjectWrapper &&other);
 
             OpenGLFrameBufferWrapper &operator=(const OpenGLFrameBufferWrapper &other);
 
@@ -38,20 +38,20 @@ namespace FDGL
 
             bool isComplete(FrameBufferTarget target) const;
 
-            void attachTexture(OpenGLTextureWrapper tex, FrameBufferAttachment attachment, int level);
+            void attachTexture(OpenGLTextureObjectWrapper tex, FrameBufferAttachment attachment, int level);
             void attachRenderBuffer(OpenGLRenderBufferWrapper rbo, FrameBufferAttachment attachment);
     };
 
     template<>
-    bool is<OpenGLFrameBufferWrapper>(const OpenGLResourceWrapper &res);
+    bool is<OpenGLFrameBufferWrapper>(const OpenGLObjectWrapper &res);
 
     template<>
-    const OpenGLFrameBufferWrapper as<OpenGLFrameBufferWrapper>(const OpenGLResourceWrapper &res);
+    const OpenGLFrameBufferWrapper as<OpenGLFrameBufferWrapper>(const OpenGLObjectWrapper &res);
 
     template<>
-    OpenGLFrameBufferWrapper as<OpenGLFrameBufferWrapper>(OpenGLResourceWrapper &res);
+    OpenGLFrameBufferWrapper as<OpenGLFrameBufferWrapper>(OpenGLObjectWrapper &res);
 
-    typedef OwnedRessource<OpenGLFrameBufferWrapper> OpenGLFrameBuffer;
+    typedef OwnedObject<OpenGLFrameBufferWrapper> OpenGLFrameBuffer;
 
     class OpenGLFrameBufferBindGuard
     {

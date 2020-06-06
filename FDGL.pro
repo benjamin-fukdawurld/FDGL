@@ -23,6 +23,7 @@ INCLUDEPATH += \
     ../FD3D/include \
     ../thirdparty/glad/include \
     ../thirdparty/glm \
+    ../thirdparty/assimp/include \
 
 SOURCES += \
     src/BaseOpenGLContext.cpp \
@@ -38,7 +39,11 @@ SOURCES += \
     src/OpenGLRenderBuffer.cpp \
     src/BufferedMesh.cpp \
     src/ShaderComponent.cpp \
-    src/BaseRenderer.cpp
+    src/BaseRenderer.cpp \
+    src/BufferedMeshComponent.cpp \
+    src/OpenGLObjectWrapper.cpp \
+    src/OpenGLTextureObjectWrapper.cpp \
+    src/OpenGLTextureObjectBindGuard.cpp
 
 HEADERS += \
     include/FDGL/BaseOpenGLContext.h \
@@ -55,7 +60,12 @@ HEADERS += \
     include/FDGL/OpenGLRenderBuffer.h \
     include/FDGL/BufferedMesh.h \
     include/FDGL/ShaderComponent.h \
-    include/FDGL/BaseRenderer.h
+    include/FDGL/BaseRenderer.h \
+    include/FDGL/BufferedMeshComponent.h \
+    include/FDGL/OpenGLObjectWrapper.h \
+    include/FDGL/OpenGLObject.h \
+    include/FDGL/OpenGLTextureObjectWrapper.h \
+    include/FDGL/OpenGLTextureObjectBindGuard.h
 
 unix {
     target.path = /usr/lib

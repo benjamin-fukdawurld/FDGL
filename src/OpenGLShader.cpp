@@ -10,36 +10,36 @@ FDGL::OpenGLShaderWrapper::OpenGLShaderWrapper(FDGL::OpenGLShaderWrapper &&other
     *this = std::move(other);
 }
 
-FDGL::OpenGLShaderWrapper::OpenGLShaderWrapper(FDGL::OpenGLResourceWrapper &&other) : OpenGLShaderWrapper()
+FDGL::OpenGLShaderWrapper::OpenGLShaderWrapper(FDGL::OpenGLObjectWrapper &&other) : OpenGLShaderWrapper()
 {
     if(FDGL::is<OpenGLShaderWrapper>(other))
         *this = std::move(other);
 }
 
-FDGL::OpenGLShaderWrapper &FDGL::OpenGLShaderWrapper::operator=(FDGL::OpenGLResourceWrapper &&other)
+FDGL::OpenGLShaderWrapper &FDGL::OpenGLShaderWrapper::operator=(FDGL::OpenGLObjectWrapper &&other)
 {
     if(FDGL::is<OpenGLShaderWrapper>(other))
-        OpenGLResourceWrapper::operator=(std::move(other));
+        OpenGLObjectWrapper::operator=(std::move(other));
 
     return *this;
 }
 
 FDGL::OpenGLShaderWrapper &FDGL::OpenGLShaderWrapper::operator=(const FDGL::OpenGLShaderWrapper &other)
 {
-    OpenGLResourceWrapper::operator=(other);
+    OpenGLObjectWrapper::operator=(other);
     return *this;
 }
 
-FDGL::OpenGLShaderWrapper &FDGL::OpenGLShaderWrapper::operator=(const FDGL::OpenGLResourceWrapper &other)
+FDGL::OpenGLShaderWrapper &FDGL::OpenGLShaderWrapper::operator=(const FDGL::OpenGLObjectWrapper &other)
 {
     if(FDGL::is<OpenGLShaderWrapper>(other))
-        OpenGLResourceWrapper::operator=(other);
+        OpenGLObjectWrapper::operator=(other);
     return *this;
 }
 
 FDGL::OpenGLShaderWrapper &FDGL::OpenGLShaderWrapper::operator=(FDGL::OpenGLShaderWrapper &&other)
 {
-    OpenGLResourceWrapper::operator=(std::move(other));
+    OpenGLObjectWrapper::operator=(std::move(other));
     return *this;
 }
 
@@ -110,13 +110,13 @@ FDGL::OpenGLShaderWrapper FDGL::OpenGLShaderWrapper::loadShader(FDGL::ShaderType
 }
 
 template<>
-bool FDGL::is<FDGL::OpenGLShaderWrapper>(const FDGL::OpenGLResourceWrapper &res)
+bool FDGL::is<FDGL::OpenGLShaderWrapper>(const FDGL::OpenGLObjectWrapper &res)
 {
     return glIsShader(res.getId());
 }
 
 template<>
-const FDGL::OpenGLShaderWrapper FDGL::as<FDGL::OpenGLShaderWrapper>(const FDGL::OpenGLResourceWrapper &res)
+const FDGL::OpenGLShaderWrapper FDGL::as<FDGL::OpenGLShaderWrapper>(const FDGL::OpenGLObjectWrapper &res)
 {
     if(is<OpenGLShaderWrapper>(res))
         return FDGL::OpenGLShaderWrapper(res);
@@ -125,7 +125,7 @@ const FDGL::OpenGLShaderWrapper FDGL::as<FDGL::OpenGLShaderWrapper>(const FDGL::
 }
 
 template<>
-FDGL::OpenGLShaderWrapper FDGL::as<FDGL::OpenGLShaderWrapper>(FDGL::OpenGLResourceWrapper &res)
+FDGL::OpenGLShaderWrapper FDGL::as<FDGL::OpenGLShaderWrapper>(FDGL::OpenGLObjectWrapper &res)
 {
     if(is<OpenGLShaderWrapper>(res))
         return FDGL::OpenGLShaderWrapper(res);

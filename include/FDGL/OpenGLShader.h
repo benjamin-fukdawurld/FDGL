@@ -9,20 +9,20 @@
 
 namespace FDGL
 {
-    class OpenGLShaderWrapper : public FDGL::OpenGLResourceWrapper
+    class OpenGLShaderWrapper : public FDGL::OpenGLObjectWrapper
     {
         public:
-            explicit OpenGLShaderWrapper(uint32_t id = 0) : OpenGLResourceWrapper(id) {}
-            OpenGLShaderWrapper(const OpenGLShaderWrapper &other) : OpenGLResourceWrapper(other) {}
-            OpenGLShaderWrapper(const OpenGLResourceWrapper &other) : OpenGLResourceWrapper(other) {}
+            explicit OpenGLShaderWrapper(uint32_t id = 0) : OpenGLObjectWrapper(id) {}
+            OpenGLShaderWrapper(const OpenGLShaderWrapper &other) : OpenGLObjectWrapper(other) {}
+            OpenGLShaderWrapper(const OpenGLObjectWrapper &other) : OpenGLObjectWrapper(other) {}
 
             OpenGLShaderWrapper(OpenGLShaderWrapper &&other);
 
-            OpenGLShaderWrapper(OpenGLResourceWrapper &&other);
+            OpenGLShaderWrapper(OpenGLObjectWrapper &&other);
 
-            OpenGLShaderWrapper &operator=(const OpenGLResourceWrapper &other);
+            OpenGLShaderWrapper &operator=(const OpenGLObjectWrapper &other);
 
-            OpenGLShaderWrapper &operator=(OpenGLResourceWrapper &&other);
+            OpenGLShaderWrapper &operator=(OpenGLObjectWrapper &&other);
 
             OpenGLShaderWrapper &operator=(const OpenGLShaderWrapper &other);
 
@@ -43,15 +43,15 @@ namespace FDGL
     };
 
     template<>
-    bool is<OpenGLShaderWrapper>(const OpenGLResourceWrapper &res);
+    bool is<OpenGLShaderWrapper>(const OpenGLObjectWrapper &res);
 
     template<>
-    const OpenGLShaderWrapper as<OpenGLShaderWrapper>(const OpenGLResourceWrapper &res);
+    const OpenGLShaderWrapper as<OpenGLShaderWrapper>(const OpenGLObjectWrapper &res);
 
     template<>
-    OpenGLShaderWrapper as<OpenGLShaderWrapper>(OpenGLResourceWrapper &res);
+    OpenGLShaderWrapper as<OpenGLShaderWrapper>(OpenGLObjectWrapper &res);
 
-    typedef OwnedRessource<OpenGLShaderWrapper> OpenGLShader;
+    typedef OwnedObject<OpenGLShaderWrapper> OpenGLShader;
 
     OpenGLShaderWrapper operator ""_vert(const char *filePath, size_t);
 

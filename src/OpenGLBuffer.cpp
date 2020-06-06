@@ -1,13 +1,13 @@
 #include <FDGL/OpenGLBuffer.h>
 
 template<>
-bool FDGL::is<FDGL::OpenGLBufferWrapper>(const OpenGLResourceWrapper &res)
+bool FDGL::is<FDGL::OpenGLBufferWrapper>(const OpenGLObjectWrapper &res)
 {
     return glIsBuffer(res.getId());
 }
 
 template<>
-const FDGL::OpenGLBufferWrapper FDGL::as<FDGL::OpenGLBufferWrapper>(const FDGL::OpenGLResourceWrapper &res)
+const FDGL::OpenGLBufferWrapper FDGL::as<FDGL::OpenGLBufferWrapper>(const FDGL::OpenGLObjectWrapper &res)
 {
     if(!is<OpenGLBufferWrapper>(res))
     return OpenGLBufferWrapper();
@@ -16,7 +16,7 @@ const FDGL::OpenGLBufferWrapper FDGL::as<FDGL::OpenGLBufferWrapper>(const FDGL::
 }
 
 template<>
-FDGL::OpenGLBufferWrapper FDGL::as<FDGL::OpenGLBufferWrapper>(FDGL::OpenGLResourceWrapper &res)
+FDGL::OpenGLBufferWrapper FDGL::as<FDGL::OpenGLBufferWrapper>(FDGL::OpenGLObjectWrapper &res)
 {
     if(!is<OpenGLBufferWrapper>(res))
     return OpenGLBufferWrapper();
@@ -29,7 +29,7 @@ FDGL::OpenGLBufferWrapper::OpenGLBufferWrapper(FDGL::OpenGLBufferWrapper &&other
     *this = std::move(other);
 }
 
-FDGL::OpenGLBufferWrapper::OpenGLBufferWrapper(FDGL::OpenGLResourceWrapper &&other) : OpenGLBufferWrapper()
+FDGL::OpenGLBufferWrapper::OpenGLBufferWrapper(FDGL::OpenGLObjectWrapper &&other) : OpenGLBufferWrapper()
 {
     if(FDGL::is<OpenGLBufferWrapper>(other))
         *this = std::move(other);
@@ -37,7 +37,7 @@ FDGL::OpenGLBufferWrapper::OpenGLBufferWrapper(FDGL::OpenGLResourceWrapper &&oth
 
 FDGL::OpenGLBufferWrapper &FDGL::OpenGLBufferWrapper::operator=(FDGL::OpenGLBufferWrapper &&other)
 {
-    OpenGLResourceWrapper::operator=(std::move(other));
+    OpenGLObjectWrapper::operator=(std::move(other));
     return *this;
 }
 
@@ -102,22 +102,22 @@ void FDGL::OpenGLBufferWrapper::copy(FDGL::OpenGLBufferWrapper &buffer, size_t r
 
 FDGL::OpenGLBufferWrapper &FDGL::OpenGLBufferWrapper::operator=(const FDGL::OpenGLBufferWrapper &other)
 {
-    OpenGLResourceWrapper::operator=(other);
+    OpenGLObjectWrapper::operator=(other);
     return *this;
 }
 
-FDGL::OpenGLBufferWrapper &FDGL::OpenGLBufferWrapper::operator=(FDGL::OpenGLResourceWrapper &&other)
+FDGL::OpenGLBufferWrapper &FDGL::OpenGLBufferWrapper::operator=(FDGL::OpenGLObjectWrapper &&other)
 {
     if(FDGL::is<OpenGLBufferWrapper>(other))
-        OpenGLResourceWrapper::operator=(std::move(other));
+        OpenGLObjectWrapper::operator=(std::move(other));
 
     return *this;
 }
 
-FDGL::OpenGLBufferWrapper &FDGL::OpenGLBufferWrapper::operator=(const FDGL::OpenGLResourceWrapper &other)
+FDGL::OpenGLBufferWrapper &FDGL::OpenGLBufferWrapper::operator=(const FDGL::OpenGLObjectWrapper &other)
 {
     if(FDGL::is<OpenGLBufferWrapper>(other))
-        OpenGLResourceWrapper::operator=(other);
+        OpenGLObjectWrapper::operator=(other);
     return *this;
 }
 

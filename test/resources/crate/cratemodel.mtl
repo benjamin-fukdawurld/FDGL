@@ -7,7 +7,9 @@ newmtl 01___Default
 Ka 1.000000 1.000000 1.000000
 Kd 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
-map_Ka crate.jpg
+map_Ka crate.png
+map_Kd crate.png
+map_Ks crate_specular.png
 illum 2
 Ns 32.000000
 Tr 1.000000

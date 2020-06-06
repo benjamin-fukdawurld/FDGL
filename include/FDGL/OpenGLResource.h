@@ -1,110 +1,81 @@
 #ifndef OPENGLRESOURCE_H
 #define OPENGLRESOURCE_H
 
+#include <FDGL/OpenGLObject.h>
+#include <FDCore/BaseResource.h>
+
 #include <cstdint>
 #include <utility> // std::move
 
 namespace FDGL
 {
-    class OpenGLResourceWrapper
+    class BaseOpenGLResource : public FDCore::AbstractResource
     {
+        private:
+            std::string m_resourceName;
+            size_t m_resourceHash;
+
+        public:
+            BaseOpenGLResource();
+            explicit BaseOpenGLResource(std::string_view resourceName);
+            BaseOpenGLResource(std::string_view resourceName, std::string_view resourcePath);
+
+            BaseOpenGLResource(BaseOpenGLResource &&res);
+            BaseOpenGLResource(const BaseOpenGLResource &res) = delete;
+
+            ~BaseOpenGLResource() override = default;
+
+            std::string_view getResourcePath() const override;
+            void setResourcePath(std::string_view) override;
+
+            BaseOpenGLResource &operator=(BaseOpenGLResource &&res);
+            BaseOpenGLResource &operator=(const BaseOpenGLResource &res) = delete;
+
+
+            std::string_view getResourceName() const override;
+            void setResourceName(std::string_view resourceName) override;
+
+            size_t getResourceHash() const override;
+
+            const char *getTypeCode() const override;
+
+            size_t getTypeCodeHash() const override;
+
+            bool matchTypeCodeHash(size_t hash) const override;
+    };
+
+    template<typename T>
+    class OpenGLResource : BaseOpenGLResource
+    {
+        public:
+            typedef T ObjectType;
+
         protected:
-            uint32_t m_id;
+            ObjectType m_obj;
 
         public:
-            explicit OpenGLResourceWrapper(uint32_t id = 0) : m_id(id) {}
-            OpenGLResourceWrapper(const OpenGLResourceWrapper &other) : m_id(other.m_id) {}
-            OpenGLResourceWrapper(OpenGLResourceWrapper &&other) : OpenGLResourceWrapper()
+            using BaseOpenGLResource::BaseOpenGLResource;
+
+            ObjectType &getObject();
+            const ObjectType &getObject() const;
+
+            bool load() override
             {
-                *this = std::move(other);
+                return m_obj.create();
             }
 
-            OpenGLResourceWrapper &operator=(const OpenGLResourceWrapper &other);
-
-            OpenGLResourceWrapper &operator=(OpenGLResourceWrapper &&other);
-
-            virtual ~OpenGLResourceWrapper();
-
-            virtual void destroy();
-            virtual void reset(uint32_t id);
-            virtual uint32_t release();
-
-            uint32_t getId() const { return m_id; }
-            virtual void setId(uint32_t id);
-            virtual void swap(OpenGLResourceWrapper &other);
-
-            operator bool() const { return m_id != 0; }
-            uint32_t operator*() const { return m_id; }
-            uint32_t *get() { return &m_id; }
-            const uint32_t *get() const { return &m_id; }
-
-            bool operator==(uint32_t id) const { return m_id == id; }
-            bool operator!=(uint32_t id) const { return m_id != id; }
-            bool operator==(const OpenGLResourceWrapper &other) const { return *this == other.m_id; }
-            bool operator!=(const OpenGLResourceWrapper &other) const { return *this != other.m_id; }
-            bool operator==(std::nullptr_t) const { return m_id == 0; }
-            bool operator!=(std::nullptr_t) const { return m_id != 0; }
-    };
-
-    template<typename ResourceType>
-    class OwnedRessource : public ResourceType
-    {
-        public:
-            explicit OwnedRessource(uint32_t id = 0): ResourceType(id) {}
-
-            OwnedRessource(const OwnedRessource &) = delete;
-
-            OwnedRessource(ResourceType &&other) { *this = std::move(other); }
-
-            OwnedRessource(OwnedRessource &&other) { *this = std::move(other); }
-
-            ~OwnedRessource() override
+            bool isLoaded() const override
             {
-                static_cast<ResourceType*>(this)->destroy();
+                return m_obj == true;
             }
 
-            OwnedRessource<ResourceType> &operator=(const OwnedRessource &) = delete;
-
-            OwnedRessource<ResourceType> &operator=(ResourceType &&other)
+            void release() override
             {
-                ResourceType &res = static_cast<ResourceType&>(*this);
-                res.destroy();
-                res = std::move(other);
-                return *this;
-            }
-
-            OwnedRessource<ResourceType> &operator=(OwnedRessource &&other)
-            {
-                static_cast<ResourceType*>(this)->swap(other); // if m_id != 0 the ressource wil be released.
-                return *this;
-            }
-
-            void reset(uint32_t id) override
-            {
-                ResourceType::destroy();
-                ResourceType::reset(id);
+                m_obj.destroy();
             }
     };
-
-    typedef OwnedRessource<OpenGLResourceWrapper> OpenGLResource;
-
-    template<typename T>
-    bool is(const OpenGLResourceWrapper &)
-    {
-        return false;
-    }
-
-    template<typename T>
-    const T as(const OpenGLResourceWrapper &)
-    {
-        return T();
-    }
-
-    template<typename T>
-    T as(OpenGLResourceWrapper &)
-    {
-        return T();
-    }
 }
+
+generateTypeCode(FDGL::BaseOpenGLResource);
 
 #endif // OPENGLRESOURCE_H

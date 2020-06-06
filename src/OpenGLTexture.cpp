@@ -1,145 +1,166 @@
-#include "include/FDGL/OpenGLTexture.h"
+#include <FDGL/OpenGLTexture.h>
 
-#include <glm/gtc/type_ptr.hpp>
-
-template<>
-bool FDGL::is<FDGL::OpenGLTextureWrapper>(const OpenGLResourceWrapper &res)
+bool FDGL::OpenGLTexture::load()
 {
-    return glIsTexture(res.getId());
+    release();
+
+    FD3D::TextureData data = AbstractTexture::loadFile(getResourcePath());
+    if(!data.data)
+        return false;
+
+    if(!m_tex.create())
+        return FDGL::OpenGLTextureObjectWrapper();
+
+    m_tex.bind(FDGL::TextureTarget::Texture2D);
+
+    m_tex.setWrapModeS(FDGL::TextureWrapMode::Repeat);
+    m_tex.setWrapModeT(FDGL::TextureWrapMode::Repeat);
+
+    m_tex.setMinFilter(FDGL::TextureFilter::LinearMipmapLinear);
+    m_tex.setMagFilter(FDGL::TextureFilter::Linear);
+
+    GLenum format;
+    switch (data.channelsInformation.getNumberOfChannels())
+    {
+        case 1:
+            format = GL_RED;
+        break;
+
+        case 2:
+            format = GL_RG;
+        break;
+
+        case 3:
+            format = GL_RGB;
+        break;
+
+        case 4:
+            format = GL_RGBA;
+        break;
+
+        default:
+            format = GL_INVALID_ENUM;
+        break;
+    }
+
+    size_t size[2] = { data.width, data.height };
+    m_tex.allocate(FDGL::TextureTarget::Texture2D, 0, static_cast<GLint>(format), size,  format,
+                 (data.channelsInformation.isRedFloat() ? GL_FLOAT : GL_UNSIGNED_BYTE), data.data.get());
+    m_tex.generateMipMap();
+
+    return true;
 }
 
-template<>
-const FDGL::OpenGLTextureWrapper FDGL::as<FDGL::OpenGLTextureWrapper>(const FDGL::OpenGLResourceWrapper &res)
+bool FDGL::OpenGLTexture::isLoaded() const
 {
-    if(!is<OpenGLTextureWrapper>(res))
-    return OpenGLTextureWrapper();
-
-    return OpenGLTextureWrapper(res.getId());
+    return m_tex.getId() != 0;
 }
 
-template<>
-FDGL::OpenGLTextureWrapper FDGL::as<FDGL::OpenGLTextureWrapper>(FDGL::OpenGLResourceWrapper &res)
+void FDGL::OpenGLTexture::release()
 {
-    if(!is<OpenGLTextureWrapper>(res))
-    return OpenGLTextureWrapper();
-
-    return OpenGLTextureWrapper(res.getId());
+    m_tex.destroy();
 }
 
-FDGL::OpenGLTextureWrapper::OpenGLTextureWrapper(FDGL::OpenGLTextureWrapper &&other) : OpenGLTextureWrapper()
+const char *FDGL::OpenGLTexture::getTypeCode() const
 {
-    *this = std::move(other);
+    return FDCore::TypeCodeHelper<FDGL::OpenGLTexture>::code;
 }
 
-FDGL::OpenGLTextureWrapper::OpenGLTextureWrapper(FDGL::OpenGLResourceWrapper &&other) : OpenGLTextureWrapper()
+size_t FDGL::OpenGLTexture::getTypeCodeHash() const
 {
-    if(FDGL::is<OpenGLTextureWrapper>(other))
-        *this = std::move(other);
+    return FDCore::TypeCodeHelper<FDGL::OpenGLTexture>::hash();
 }
 
-FDGL::OpenGLTextureWrapper &FDGL::OpenGLTextureWrapper::operator=(FDGL::OpenGLTextureWrapper &&other)
+bool FDGL::OpenGLTexture::matchTypeCodeHash(size_t hash) const
 {
-    OpenGLResourceWrapper::operator=(std::move(other));
-    return *this;
+    return hash == FDCore::TypeCodeHelper<FDGL::OpenGLTexture>::hash()
+            || FD3D::AbstractTexture::matchTypeCodeHash(hash);
 }
 
-bool FDGL::OpenGLTextureWrapper::create()
+GLenum FDGL::OpenGLTexture::numberOfChannelsToGLFormat(size_t numberOfChannels)
 {
-    reset(0);
-    glGenTextures(1, &m_id);
+    switch (numberOfChannels)
+    {
+        case 1:
+        return GL_RED;
 
-    return m_id != 0;
+        case 2:
+        return GL_RG;
+
+        case 3:
+        return GL_RGB;
+
+        case 4:
+        return GL_RGBA;
+
+        default:
+        return GL_INVALID_ENUM;
+    }
 }
 
-void FDGL::OpenGLTextureWrapper::destroy()
+bool FDGL::OpenGLEmbeddedTexture::load()
 {
-    if(m_id == 0)
-        return;
+    release();
 
-    glDeleteTextures(1, &m_id);
-    m_id = 0;
+    FD3D::TextureData data = AbstractTexture::loadEmbeddedTexture(m_aiTex);
+    if(!data.data)
+        return false;
+
+    if(!m_tex.create())
+        return FDGL::OpenGLTextureObjectWrapper();
+
+    m_tex.bind(FDGL::TextureTarget::Texture2D);
+
+    m_tex.setWrapModeS(FDGL::TextureWrapMode::Repeat);
+    m_tex.setWrapModeT(FDGL::TextureWrapMode::Repeat);
+
+    m_tex.setMinFilter(FDGL::TextureFilter::LinearMipmapLinear);
+    m_tex.setMagFilter(FDGL::TextureFilter::Linear);
+
+    GLenum format;
+    switch (data.channelsInformation.getNumberOfChannels())
+    {
+        case 1:
+            format = GL_RED;
+        break;
+
+        case 2:
+            format = GL_RG;
+        break;
+
+        case 3:
+            format = GL_RGB;
+        break;
+
+        case 4:
+            format = GL_RGBA;
+        break;
+
+        default:
+            format = GL_INVALID_ENUM;
+        break;
+    }
+
+    size_t size[2] = { data.width, data.height };
+    m_tex.allocate(FDGL::TextureTarget::Texture2D, 0, static_cast<GLint>(format), size,  format,
+                 (data.channelsInformation.isRedFloat() ? GL_FLOAT : GL_UNSIGNED_BYTE), data.data.get());
+    m_tex.generateMipMap();
+
+    return true;
 }
 
-void FDGL::OpenGLTextureWrapper::bind(FDGL::TextureTarget target)
+const char *FDGL::OpenGLEmbeddedTexture::getTypeCode() const
 {
-    glBindTexture(static_cast<GLenum>(target), m_id);
+    return FDCore::TypeCodeHelper<FDGL::OpenGLEmbeddedTexture>::code;
 }
 
-void FDGL::OpenGLTextureWrapper::unbind(FDGL::TextureTarget target)
+size_t FDGL::OpenGLEmbeddedTexture::getTypeCodeHash() const
 {
-    glBindTexture(static_cast<GLenum>(target), 0);
+    return FDCore::TypeCodeHelper<FDGL::OpenGLEmbeddedTexture>::hash();
 }
 
-void FDGL::OpenGLTextureWrapper::activateTexture(uint8_t texUnit)
+bool FDGL::OpenGLEmbeddedTexture::matchTypeCodeHash(size_t hash) const
 {
-    if(texUnit <= 15)
-        glActiveTexture(GL_TEXTURE0 + texUnit);
-    else
-        std::cerr << "texture unit must be in range [0, 15] received '" << static_cast<int>(texUnit) << "'" << std::endl;
-}
-
-void FDGL::OpenGLTextureWrapper::setWrapModeS(TextureWrapMode mode)
-{
-    glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, static_cast<int>(mode));
-}
-
-void FDGL::OpenGLTextureWrapper::setWrapModeT(TextureWrapMode mode)
-{
-    glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, static_cast<int>(mode));
-}
-
-void FDGL::OpenGLTextureWrapper::setWrapModeR(TextureWrapMode mode)
-{
-    glTextureParameteri(m_id, GL_TEXTURE_WRAP_R, static_cast<int>(mode));
-}
-
-void FDGL::OpenGLTextureWrapper::setBorderColor(const glm::vec4 &color)
-{
-    glTextureParameterfv(m_id, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(color));
-}
-
-void FDGL::OpenGLTextureWrapper::setMinFilter(FDGL::TextureFilter filter)
-{
-    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, static_cast<int>(filter));
-}
-
-void FDGL::OpenGLTextureWrapper::setMagFilter(FDGL::TextureFilter filter)
-{
-    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, static_cast<int>(filter));
-}
-
-void FDGL::OpenGLTextureWrapper::generateMipMap()
-{
-    glGenerateTextureMipmap(m_id);
-}
-
-FDGL::OpenGLTextureWrapper &FDGL::OpenGLTextureWrapper::operator=(const FDGL::OpenGLTextureWrapper &other)
-{
-    OpenGLResourceWrapper::operator=(other);
-    return *this;
-}
-
-FDGL::OpenGLTextureWrapper &FDGL::OpenGLTextureWrapper::operator=(FDGL::OpenGLResourceWrapper &&other)
-{
-    if(FDGL::is<OpenGLTextureWrapper>(other))
-        OpenGLResourceWrapper::operator=(std::move(other));
-
-    return *this;
-}
-
-FDGL::OpenGLTextureWrapper &FDGL::OpenGLTextureWrapper::operator=(const FDGL::OpenGLResourceWrapper &other)
-{
-    if(FDGL::is<OpenGLTextureWrapper>(other))
-        OpenGLResourceWrapper::operator=(other);
-    return *this;
-}
-
-FDGL::OpenGLTextureWrapper &FDGL::OpenGLTextureBindGuard::getWrapper() const
-{
-    return m_wrapper;
-}
-
-FDGL::TextureTarget FDGL::OpenGLTextureBindGuard::getTarget() const
-{
-    return m_target;
+    return hash == FDCore::TypeCodeHelper<FDGL::OpenGLEmbeddedTexture>::hash()
+            || FDGL::OpenGLTexture::matchTypeCodeHash(hash);
 }

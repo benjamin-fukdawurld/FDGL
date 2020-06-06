@@ -8,35 +8,35 @@ FDGL::OpenGLVertexArrayWrapper::OpenGLVertexArrayWrapper(FDGL::OpenGLVertexArray
     *this = std::move(other);
 }
 
-FDGL::OpenGLVertexArrayWrapper::OpenGLVertexArrayWrapper(FDGL::OpenGLResourceWrapper &&other)
+FDGL::OpenGLVertexArrayWrapper::OpenGLVertexArrayWrapper(FDGL::OpenGLObjectWrapper &&other)
 {
     if(FDGL::is<FDGL::OpenGLVertexArrayWrapper>(other))
     *this = std::move(other);
 }
 
-FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(const FDGL::OpenGLResourceWrapper &other)
+FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(const FDGL::OpenGLObjectWrapper &other)
 {
     if(FDGL::is<OpenGLVertexArrayWrapper>(other))
-        OpenGLResourceWrapper::operator=(other);
+        OpenGLObjectWrapper::operator=(other);
     return *this;
 }
 
-FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(FDGL::OpenGLResourceWrapper &&other)
+FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(FDGL::OpenGLObjectWrapper &&other)
 {
     if(FDGL::is<OpenGLVertexArrayWrapper>(other))
-        OpenGLResourceWrapper::operator=(std::move(other));
+        OpenGLObjectWrapper::operator=(std::move(other));
     return *this;
 }
 
 FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(const FDGL::OpenGLVertexArrayWrapper &other)
 {
-    OpenGLResourceWrapper::operator=(std::move(other));
+    OpenGLObjectWrapper::operator=(std::move(other));
     return *this;
 }
 
 FDGL::OpenGLVertexArrayWrapper &FDGL::OpenGLVertexArrayWrapper::operator=(FDGL::OpenGLVertexArrayWrapper &&other)
 {
-    OpenGLResourceWrapper::operator=(std::move(other));
+    OpenGLObjectWrapper::operator=(std::move(other));
     return *this;
 }
 
@@ -66,13 +66,13 @@ void FDGL::OpenGLVertexArrayWrapper::unbind()
 }
 
 template<>
-bool FDGL::is<FDGL::OpenGLVertexArrayWrapper>(const FDGL::OpenGLResourceWrapper &res)
+bool FDGL::is<FDGL::OpenGLVertexArrayWrapper>(const FDGL::OpenGLObjectWrapper &res)
 {
     return glIsVertexArray(res.getId());
 }
 
 template<>
-const FDGL::OpenGLVertexArrayWrapper FDGL::as<FDGL::OpenGLVertexArrayWrapper>(const FDGL::OpenGLResourceWrapper &res)
+const FDGL::OpenGLVertexArrayWrapper FDGL::as<FDGL::OpenGLVertexArrayWrapper>(const FDGL::OpenGLObjectWrapper &res)
 {
     if(FDGL::is<FDGL::OpenGLVertexArrayWrapper>(res))
         return FDGL::OpenGLVertexArrayWrapper(res);
@@ -81,7 +81,7 @@ const FDGL::OpenGLVertexArrayWrapper FDGL::as<FDGL::OpenGLVertexArrayWrapper>(co
 }
 
 template<>
-FDGL::OpenGLVertexArrayWrapper FDGL::as<FDGL::OpenGLVertexArrayWrapper>(FDGL::OpenGLResourceWrapper &res)
+FDGL::OpenGLVertexArrayWrapper FDGL::as<FDGL::OpenGLVertexArrayWrapper>(FDGL::OpenGLObjectWrapper &res)
 {
     if(FDGL::is<FDGL::OpenGLVertexArrayWrapper>(res))
         return FDGL::OpenGLVertexArrayWrapper(res);

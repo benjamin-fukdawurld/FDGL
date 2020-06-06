@@ -18,7 +18,7 @@ namespace FDGL
             typedef void* (*GetProcAddressFunc) (const char*);
 
         protected:
-            FDCore::AssociativeContainer<std::string, OpenGLResourceWrapper> m_glResources;
+            FDCore::AssociativeContainer<std::string, OpenGLObjectWrapper> m_glResources;
 
         public:
             BaseOpenGLContext();
@@ -59,10 +59,10 @@ namespace FDGL
             void disable(uint32_t capability, uint32_t index);
 
             bool hasResource(const std::string &key) const;
-            OpenGLResourceWrapper getRessource(const std::string &key);
-            const OpenGLResourceWrapper getRessource(const std::string &key) const;
-            void addRessource(const std::string &key, const OpenGLResourceWrapper &resource);
-            void setRessource(const std::string &key, const OpenGLResourceWrapper &resource);
+            OpenGLObjectWrapper getRessource(const std::string &key);
+            const OpenGLObjectWrapper getRessource(const std::string &key) const;
+            void addRessource(const std::string &key, const OpenGLObjectWrapper &resource);
+            void setRessource(const std::string &key, const OpenGLObjectWrapper &resource);
             void removeResource(const std::string &key);
 
             virtual bool loadOpenGLFunctions(GetProcAddressFunc f) const;

@@ -6,7 +6,7 @@
 #include <FDGL/OpenGLBuffer.h>
 #include <FDGL/OpenGLVertexArray.h>
 #include <FDGL/OpenGLUtils.h>
-#include <FDGL/BufferedMesh.h>
+#include <FDGL/BufferedMeshComponent.h>
 
 #include <FDCore/TimeManager.h>
 
@@ -188,7 +188,7 @@ int draw_cube(int, char* [])
     w.setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     FDGL::OpenGLShaderProgram program = createShaderProgram();
-    FDGL::OpenGLTexture tex = loadTexture("../../FDGL/test/resources/wall.jpg");
+    FDGL::OpenGLTextureObject tex = loadTexture("../../FDGL/test/resources/wall.jpg");
 
     FDGL::OpenGLBuffer vbo, ebo;
     vbo.create();

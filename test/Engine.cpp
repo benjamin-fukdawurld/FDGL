@@ -1,10 +1,10 @@
 #include "Engine.h"
 
-#include <FDGL/BufferedMesh.h>
+#include <FDGL/BufferedMeshComponent.h>
 #include <FDGL/OpenGLVertexArray.h>
 
 #include <FD3D/SceneGraph/SceneLoader.h>
-#include <FD3D/Behavior/StrategyBehavior.h>
+#include <FD3D/Behavior/StrategyBehaviorComponent.h>
 
 #include "GLUtils.h"
 
@@ -70,7 +70,7 @@ void Engine::update()
             FD3D::Component *comp = m_scene.getComponent(id);
             if(comp)
             {
-                FD3D::Behavior *bvr = comp->as<FD3D::Behavior>();
+                FD3D::BehaviorComponent *bvr = comp->as<FD3D::BehaviorComponent>();
                 if(bvr)
                     bvr->update();
             }
@@ -86,22 +86,22 @@ void Engine::initScene()
     {
         std::unique_ptr<FD3D::CameraNode> cam(new FD3D::CameraNode);
         cam->setName("default_camera");
-        cam->getEntity().setPosition(glm::vec3(0.0f, 3.0f, 10.0f));
+        cam->getEntity()->setPosition(glm::vec3(0.0f, 3.0f, 10.0f));
         cams.push_back(cam.get());
         m_scene.addNode(cam.release());
     }
 
-    static_cast<Renderer&>(m_renderer).setActiveCamera(&cams.front()->getEntity());
+    static_cast<Renderer&>(m_renderer).setActiveCamera(cams.front()->getEntity());
     static_cast<Renderer&>(m_renderer).initProjection(800, 600);
 
     std::vector<FD3D::LightNode*> lights = m_scene.getNodesAs<FD3D::LightNode>();
     if(lights.empty())
     {
-        std::function<void(FD3D::StrategyBehavior*)> updateLightFunc = [this](FD3D::StrategyBehavior *bvr){
+        std::function<void(FD3D::StrategyBehaviorComponent*)> updateLightFunc = [this](FD3D::StrategyBehaviorComponent *bvr){
             float elapsedTimeInSeconds = m_timeMgr.getElapsedTime() / 1000.0f;
 
             float radius = 3.0f;
-            glm::vec3 &p = bvr->getNode()->as<FD3D::LightNode>()->getEntity().getPosition();
+            glm::vec3 &p = bvr->getNode()->as<FD3D::LightNode>()->getEntity()->getPosition();
             p.x = std::sin(elapsedTimeInSeconds) * radius;
             p.z = std::cos(elapsedTimeInSeconds) * radius;
             p.y = std::sin(elapsedTimeInSeconds * 3) * radius;
@@ -109,7 +109,7 @@ void Engine::initScene()
 
         std::unique_ptr<FD3D::LightNode> light(new FD3D::LightNode);
         light->setName("default_light");
-        FD3D::Light &l = light->getEntity();
+        FD3D::Light &l = *light->getEntity();
         l.setPosition(glm::vec3(0.0f, 0.0f, 3.0f));
         l.setDirection(glm::vec3(0.0f, 0.0f, -1.0f));
         l.setType(FD3D::LightType::DirectionalLight);
@@ -117,7 +117,7 @@ void Engine::initScene()
         l.attenuation.setConstantAttenuation(5.0f);
         lights.push_back(light.get());
 
-        std::unique_ptr<FD3D::StrategyBehavior> b(new FD3D::StrategyBehavior());
+        std::unique_ptr<FD3D::StrategyBehaviorComponent> b(new FD3D::StrategyBehaviorComponent());
         b->setUpdateStrategy(updateLightFunc);
         b->setScene(&m_scene);
         b->setNodeId(light->getId());
@@ -132,11 +132,11 @@ void Engine::initScene()
         m_scene.addNode(light.release());
     }
 
-    static_cast<Renderer&>(m_renderer).setLight(&lights.front()->getEntity());
+    static_cast<Renderer&>(m_renderer).setLight(lights.front()->getEntity());
 
-    std::vector<FDGL::BufferedMesh*> meshes = m_scene.getComponentsAs<FDGL::BufferedMesh>();
-    std::function<void(FD3D::StrategyBehavior*)> updateFunc = [this](FD3D::StrategyBehavior *bvr){
-        bvr->getNode()->as<FD3D::ObjectNode>()->getEntity().setRotation(glm::vec3(0, m_timeMgr.getElapsedTime() / 10000.0f, 0));
+    std::vector<FDGL::BufferedMeshComponent*> meshes = m_scene.getComponentsAs<FDGL::BufferedMeshComponent>();
+    std::function<void(FD3D::StrategyBehaviorComponent*)> updateFunc = [this](FD3D::StrategyBehaviorComponent *bvr){
+        bvr->getNode()->as<FD3D::ObjectNode>()->getEntity()->setRotation(glm::vec3(0, m_timeMgr.getElapsedTime() / 10000.0f, 0));
     };
 
     for(auto *m: meshes)
@@ -145,7 +145,7 @@ void Engine::initScene()
         auto v = m_scene.getBoundNodes(m->getId());
         for(auto &n: v)
         {
-            std::unique_ptr<FD3D::StrategyBehavior> b(new FD3D::StrategyBehavior());
+            std::unique_ptr<FD3D::StrategyBehaviorComponent> b(new FD3D::StrategyBehaviorComponent());
             b->setUpdateStrategy(updateFunc);
             b->setScene(&m_scene);
             b->setNodeId(n->getId());
@@ -163,7 +163,7 @@ void Engine::initScene()
 
 bool Engine::loadScene(const std::string &path)
 {
-    FDGL::BufferedMesh::setDefaultVAOFunction([](FDGL::BufferedMesh &mesh)
+    FDGL::BufferedMeshComponent::setDefaultVAOFunction([](FDGL::BufferedMeshComponent &mesh)
     {
         FDGL::OpenGLBufferWrapper vbo = mesh.getVBO();
         FDGL::OpenGLBufferWrapper ebo = mesh.getEBO();
@@ -188,7 +188,7 @@ bool Engine::loadScene(const std::string &path)
         return loadTexture(texture);
     });
     loader.setMeshAllocator([](){
-        return new FDGL::BufferedMesh();
+        return new FDGL::BufferedMeshComponent();
     });
     return loader.loadScene(m_scene, path, aiProcess_Triangulate);
 }

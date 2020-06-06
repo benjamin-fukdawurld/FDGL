@@ -139,21 +139,21 @@ bool FDGL::BaseOpenGLContext::hasResource(const std::string &key) const
     return m_glResources.find(key) != m_glResources.end();
 }
 
-const FDGL::OpenGLResourceWrapper FDGL::BaseOpenGLContext::getRessource(const std::string &key) const
+const FDGL::OpenGLObjectWrapper FDGL::BaseOpenGLContext::getRessource(const std::string &key) const
 {
     auto it = m_glResources.find(key);
     if(it == m_glResources.end())
-        return OpenGLResourceWrapper();
+        return OpenGLObjectWrapper();
 
     return it->value;
 }
 
-void FDGL::BaseOpenGLContext::addRessource(const std::string &key, const OpenGLResourceWrapper &resource)
+void FDGL::BaseOpenGLContext::addRessource(const std::string &key, const OpenGLObjectWrapper &resource)
 {
     m_glResources.insert(key, resource);
 }
 
-void FDGL::BaseOpenGLContext::setRessource(const std::string &key, const FDGL::OpenGLResourceWrapper &resource)
+void FDGL::BaseOpenGLContext::setRessource(const std::string &key, const FDGL::OpenGLObjectWrapper &resource)
 {
     auto it = m_glResources.find(key);
     if(it == m_glResources.end())
@@ -167,11 +167,11 @@ void FDGL::BaseOpenGLContext::removeResource(const std::string &key)
     m_glResources.erase(key);
 }
 
-FDGL::OpenGLResourceWrapper FDGL::BaseOpenGLContext::getRessource(const std::string &key)
+FDGL::OpenGLObjectWrapper FDGL::BaseOpenGLContext::getRessource(const std::string &key)
 {
     auto it = m_glResources.find(key);
     if(it == m_glResources.end())
-        return OpenGLResourceWrapper();
+        return OpenGLObjectWrapper();
 
     return it->value;
 }

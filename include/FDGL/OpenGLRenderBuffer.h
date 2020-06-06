@@ -7,20 +7,20 @@
 
 namespace FDGL
 {
-    class OpenGLRenderBufferWrapper : public FDGL::OpenGLResourceWrapper
+    class OpenGLRenderBufferWrapper : public FDGL::OpenGLObjectWrapper
     {
         public:
-            explicit OpenGLRenderBufferWrapper(uint32_t id = 0) : OpenGLResourceWrapper(id) {}
-            OpenGLRenderBufferWrapper(const OpenGLRenderBufferWrapper &other) : OpenGLResourceWrapper(other) {}
-            OpenGLRenderBufferWrapper(const OpenGLResourceWrapper &other) : OpenGLResourceWrapper(other) {}
+            explicit OpenGLRenderBufferWrapper(uint32_t id = 0) : OpenGLObjectWrapper(id) {}
+            OpenGLRenderBufferWrapper(const OpenGLRenderBufferWrapper &other) : OpenGLObjectWrapper(other) {}
+            OpenGLRenderBufferWrapper(const OpenGLObjectWrapper &other) : OpenGLObjectWrapper(other) {}
 
             OpenGLRenderBufferWrapper(OpenGLRenderBufferWrapper &&other);
 
-            OpenGLRenderBufferWrapper(OpenGLResourceWrapper &&other);
+            OpenGLRenderBufferWrapper(OpenGLObjectWrapper &&other);
 
-            OpenGLRenderBufferWrapper &operator=(const OpenGLResourceWrapper &other);
+            OpenGLRenderBufferWrapper &operator=(const OpenGLObjectWrapper &other);
 
-            OpenGLRenderBufferWrapper &operator=(OpenGLResourceWrapper &&other);
+            OpenGLRenderBufferWrapper &operator=(OpenGLObjectWrapper &&other);
 
             OpenGLRenderBufferWrapper &operator=(const OpenGLRenderBufferWrapper &other);
 
@@ -37,15 +37,15 @@ namespace FDGL
     };
 
     template<>
-    bool is<OpenGLRenderBufferWrapper>(const OpenGLResourceWrapper &res);
+    bool is<OpenGLRenderBufferWrapper>(const OpenGLObjectWrapper &res);
 
     template<>
-    const OpenGLRenderBufferWrapper as<OpenGLRenderBufferWrapper>(const OpenGLResourceWrapper &res);
+    const OpenGLRenderBufferWrapper as<OpenGLRenderBufferWrapper>(const OpenGLObjectWrapper &res);
 
     template<>
-    OpenGLRenderBufferWrapper as<OpenGLRenderBufferWrapper>(OpenGLResourceWrapper &res);
+    OpenGLRenderBufferWrapper as<OpenGLRenderBufferWrapper>(OpenGLObjectWrapper &res);
 
-    typedef OwnedRessource<OpenGLRenderBufferWrapper> OpenGLRenderBuffer;
+    typedef OwnedObject<OpenGLRenderBufferWrapper> OpenGLRenderBuffer;
 }
 
 #endif // OPENGLRENDERBUFFER_H
